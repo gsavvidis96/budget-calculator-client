@@ -38,7 +38,7 @@ const BudgetItem = ({
     type: undefined,
   });
   const { id: budgetId } = useParams();
-  const { fetchCurrentBudget } = useBudgetStore();
+  const { fetchCurrentBudget, setBudgetsFetched } = useBudgetStore();
   const { setSnackbar } = useBaseStore();
 
   const displayedDescription = useMemo(() => {
@@ -81,6 +81,8 @@ const BudgetItem = ({
     handleClose();
 
     setLoader(false);
+
+    setBudgetsFetched(false);
 
     setSnackbar({
       open: true,
