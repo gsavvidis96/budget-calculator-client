@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   routeRules: {
     "/login": { ssr: false },
+    "/budgets": { ssr: false },
     "/budgets/*": { ssr: false },
   },
   build: {
@@ -16,7 +17,6 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify({ autoImport: true }));
       });
     },
-    //...
   ],
   vite: {
     vue: {
