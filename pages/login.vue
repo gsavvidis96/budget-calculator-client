@@ -15,10 +15,16 @@ definePageMeta({
 });
 
 const auth = useFirebaseAuth()!;
+const route = useRoute();
+const router = useRouter();
 
 const googleLogin = async () => {
   try {
     await signInWithPopup(auth, new GoogleAuthProvider());
+
+    router.replace({
+      path: (route.query?.redirect as string) || "/budgets",
+    });
   } catch (e) {
     console.error(e);
   }
