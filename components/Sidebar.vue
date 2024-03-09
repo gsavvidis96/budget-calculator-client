@@ -4,7 +4,12 @@
       <buttons />
     </client-only>
 
-    <v-btn variant="text" class="mt-auto" prepend-icon="mdi-weather-night">
+    <v-btn
+      variant="text"
+      class="mt-auto"
+      prepend-icon="mdi-weather-night"
+      @click="toggleTheme"
+    >
       <template v-slot:prepend>
         <v-icon color="success" size="24px">mdi-weather-night</v-icon>
       </template>
@@ -16,6 +21,13 @@
 
 <script setup lang="ts">
 import Buttons from "@/components/navbar/Buttons.vue";
+import { useTheme } from "vuetify";
+
+const theme = useTheme();
+
+const toggleTheme = () => {
+  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+};
 </script>
 
 <style scoped></style>
