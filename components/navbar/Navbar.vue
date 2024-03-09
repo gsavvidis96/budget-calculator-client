@@ -4,22 +4,26 @@
       <div>Budget Calculator</div>
     </NuxtLink>
 
-    <client-only>
-      <buttons />
-    </client-only>
+    <v-btn
+      class="ml-auto"
+      density="comfortable"
+      icon="mdi-menu"
+      @click="drawer = !drawer"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import Buttons from "@/components/navbar/Buttons.vue";
+import { useBaseStore } from "@/stores/base";
+import { storeToRefs } from "pinia";
+
+const baseStore = useBaseStore();
+
+const { drawer } = storeToRefs(baseStore);
 </script>
 
 <style scoped>
 .navbar {
   height: 64px;
-}
-
-.buttons {
-  gap: 4px;
 }
 </style>

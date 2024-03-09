@@ -1,13 +1,33 @@
 <template>
-  <div class="d-flex align-center ml-auto buttons" v-if="isCurrentUserLoaded">
-    <v-btn v-if="!user" to="/login">Login</v-btn>
+  <template v-if="isCurrentUserLoaded">
+    <v-btn variant="text" v-if="!user" to="/login">
+      <template v-slot:prepend>
+        <v-icon color="success" size="24px">mdi-login</v-icon>
+      </template>
+
+      Login
+    </v-btn>
 
     <template v-if="user">
-      <v-btn to="/login" variant="text">My Budgets</v-btn>
+      <v-btn variant="text" to="/login">
+        <template v-slot:prepend>
+          <v-icon color="success" size="24px"
+            >mdi-clipboard-list-outline</v-icon
+          >
+        </template>
 
-      <v-btn @click="onSignOut">Logout</v-btn>
+        My Budgets
+      </v-btn>
+
+      <v-btn variant="text" @click="onSignOut">
+        <template v-slot:prepend>
+          <v-icon color="success" size="24px">mdi-logout</v-icon>
+        </template>
+
+        Logout
+      </v-btn>
     </template>
-  </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -31,8 +51,4 @@ const onSignOut = async () => {
 };
 </script>
 
-<style scoped>
-.buttons {
-  gap: 8px;
-}
-</style>
+<style scoped></style>
