@@ -4,7 +4,7 @@
       <buttons />
     </client-only>
 
-    <v-btn variant="text" class="mt-auto">
+    <v-btn variant="text" class="mt-auto" prepend-icon="mdi-weather-night">
       <template v-slot:prepend>
         <v-icon color="success" size="24px">mdi-weather-night</v-icon>
       </template>

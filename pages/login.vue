@@ -28,6 +28,10 @@ const router = useRouter();
 
 const credentialFromError = ref<any>(null);
 
+const baseStore = useBaseStore();
+
+const { snackbar } = storeToRefs(baseStore);
+
 const googleLogin = async () => {
   try {
     const res = await signInWithPopup(auth, new GoogleAuthProvider());
@@ -44,6 +48,14 @@ const googleLogin = async () => {
 
 const githubLogin = async () => {
   try {
+    snackbar.value = {
+      open: true,
+      text: "XAXAXAXA",
+      color: "success",
+    };
+
+    return;
+
     await signInWithPopup(auth, new GithubAuthProvider());
   } catch (error: any) {
     console.log(JSON.parse(JSON.stringify(error)));

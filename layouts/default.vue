@@ -6,6 +6,14 @@
       <sidebar />
     </v-navigation-drawer>
     <slot />
+
+    <v-snackbar v-model="snackbar.open" :color="snackbar.color">
+      {{ snackbar.text }}
+
+      <template v-slot:actions>
+        <v-btn density="comfortable" icon="mdi-close" @click="closeSnackbar" />
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -16,8 +24,9 @@ import { useBaseStore } from "@/stores/base";
 import { storeToRefs } from "pinia";
 
 const baseStore = useBaseStore();
+const { closeSnackbar } = baseStore;
 
-const { drawer } = storeToRefs(baseStore);
+const { drawer, snackbar } = storeToRefs(baseStore);
 </script>
 
 <style scoped></style>
