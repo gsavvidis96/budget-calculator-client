@@ -15,7 +15,6 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   OAuthProvider,
-  linkWithCredential,
 } from "firebase/auth";
 
 definePageMeta({
@@ -34,9 +33,7 @@ const { snackbar } = storeToRefs(baseStore);
 
 const googleLogin = async () => {
   try {
-    const res = await signInWithPopup(auth, new GoogleAuthProvider());
-
-    let user = await linkWithCredential(res.user, credentialFromError.value);
+    await signInWithPopup(auth, new GoogleAuthProvider());
 
     router.replace({
       path: (route.query?.redirect as string) || "/budgets",

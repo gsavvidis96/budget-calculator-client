@@ -1,27 +1,25 @@
 <template>
   <template v-if="isCurrentUserLoaded">
-    <v-btn variant="text" v-if="!user" to="/login">
+    <v-btn variant="text" v-if="!user" to="/login" class="rounded-0">
       <template v-slot:prepend>
-        <v-icon color="success" size="24px">mdi-login</v-icon>
+        <v-icon size="24px">mdi-login</v-icon>
       </template>
 
       Login
     </v-btn>
 
     <template v-if="user">
-      <v-btn variant="text" to="/login">
+      <v-btn variant="text" to="/budgets" class="rounded-0">
         <template v-slot:prepend>
-          <v-icon color="success" size="24px"
-            >mdi-clipboard-list-outline</v-icon
-          >
+          <v-icon size="24px">mdi-clipboard-list-outline</v-icon>
         </template>
 
         My Budgets
       </v-btn>
 
-      <v-btn variant="text" @click="onSignOut">
+      <v-btn variant="text" @click="onSignOut" class="rounded-0">
         <template v-slot:prepend>
-          <v-icon color="success" size="24px">mdi-logout</v-icon>
+          <v-icon size="24px">mdi-logout</v-icon>
         </template>
 
         Logout
@@ -51,4 +49,13 @@ const onSignOut = async () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+::v-deep.v-btn--active {
+  .v-btn__overlay {
+    opacity: 1 !important;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  color: rgb(var(--v-theme-primary));
+}
+</style>

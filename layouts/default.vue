@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import Navbar from "@/components/navbar/Navbar.vue";
-import Sidebar from "@/components/Sidebar.vue";
+import Navbar from "@/components/Navbar.vue";
+import Sidebar from "@/components/sidebar/Sidebar.vue";
 import { useBaseStore } from "@/stores/base";
 import { storeToRefs } from "pinia";
 
@@ -29,4 +29,31 @@ const { closeSnackbar } = baseStore;
 const { drawer, snackbar } = storeToRefs(baseStore);
 </script>
 
-<style scoped></style>
+<style lang="scss">
+html {
+  overflow-y: auto;
+}
+
+.v-navigation-drawer {
+  border: none;
+}
+
+.v-btn {
+  text-transform: none;
+  letter-spacing: normal;
+
+  &:not(.v-btn--icon).v-btn--density-default {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto !important;
+    padding: 12px 16px;
+
+    & .v-btn__prepend {
+      margin: 0;
+      min-width: 56px;
+    }
+  }
+}
+</style>
