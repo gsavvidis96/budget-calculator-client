@@ -24,9 +24,15 @@ const dark: ThemeDefinition = {
 };
 
 export default defineNuxtPlugin((app) => {
+  const isDarkCookie = useCookie<boolean>("isDarkCookie");
+
+  if (process.server && isDarkCookie.value === undefined)
+    isDarkCookie.value = true;
+
   const vuetify = createVuetify({
+    ssr: true,
     theme: {
-      defaultTheme: "light",
+      defaultTheme: isDarkCookie.value ? "dark" : "light",
       themes: {
         light,
         dark,

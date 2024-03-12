@@ -26,14 +26,10 @@ const theme = useTheme();
 const isDarkCookie = useCookie<boolean>("isDarkCookie");
 
 onMounted(() => {
-  watch(
-    isDark,
-    (newValue) => {
-      theme.global.name.value = newValue ? "dark" : "light";
-      isDarkCookie.value = newValue;
-    },
-    { immediate: true }
-  );
+  watch(isDark, (newValue) => {
+    theme.global.name.value = newValue ? "dark" : "light";
+    isDarkCookie.value = newValue;
+  });
 });
 </script>
 
