@@ -18,6 +18,7 @@ export default defineNuxtConfig({
       });
     },
     "@pinia/nuxt",
+    "@vueuse/nuxt",
   ],
   vite: {
     vue: {

@@ -50,12 +50,14 @@ const onSignOut = async () => {
 </script>
 
 <style scoped lang="scss">
-::v-deep.v-btn--active {
+.v-btn--active {
+  color: rgb(var(--v-theme-primary));
+}
+
+:deep() {
   .v-btn__overlay {
     opacity: 1 !important;
     background-color: rgba(0, 0, 0, 0.04);
   }
-
-  color: rgb(var(--v-theme-primary));
 }
 </style>
