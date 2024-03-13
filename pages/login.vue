@@ -1,10 +1,41 @@
 <template>
-  <div>
-    <h1>LOGIN PAGE (CLIENT SIDE)</h1>
+  <div class="d-flex flex-column flex-grow-1 px-5 pb-5 align-center wrapper">
+    <div class="mb-6 alert-wrapper">
+      <v-alert
+        text="In order to use the application, please first sign in."
+        type="info"
+        variant="tonal"
+      ></v-alert>
+    </div>
 
-    <v-btn @click="googleLogin">Login with google</v-btn>
+    <div class="d-flex flex-column">
+      <v-btn variant="outlined" @click="googleLogin" class="mb-2">
+        <template v-slot:prepend>
+          <GoogleIcon />
+        </template>
 
-    <v-btn @click="githubLogin">Login with github</v-btn>
+        Sign in with Google
+      </v-btn>
+
+      <v-btn variant="outlined" @click="githubLogin">
+        <template v-slot:prepend>
+          <GitHubIcon :class="{ dark: isDark }" />
+        </template>
+
+        Sign in with GitHub
+      </v-btn>
+    </div>
+
+    <div class="mt-6 alert-wrapper">
+      <v-alert
+        v-model="emailExistsError"
+        text="Error: Unable to sign in. It appears that you already have an account associated with this email address through a different authentication provider (such as Google)"
+        type="error"
+        variant="tonal"
+        closable
+        icon="mdi-alert"
+      ></v-alert>
+    </div>
   </div>
 </template>
 
@@ -14,8 +45,10 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
-  OAuthProvider,
 } from "firebase/auth";
+import GoogleIcon from "@/components/GoogleIcon.vue";
+import GitHubIcon from "@/components/GitHubIcon.vue";
+const isDark = useDark();
 
 definePageMeta({
   middleware: "requires-no-auth",
@@ -24,12 +57,10 @@ definePageMeta({
 const auth = useFirebaseAuth()!;
 const route = useRoute();
 const router = useRouter();
-
-const credentialFromError = ref<any>(null);
-
 const baseStore = useBaseStore();
 
 const { snackbar } = storeToRefs(baseStore);
+const emailExistsError = ref<any>(false);
 
 const googleLogin = async () => {
   try {
@@ -40,38 +71,46 @@ const googleLogin = async () => {
     });
   } catch (e) {
     console.error(e);
+
+    snackbar.value = {
+      open: true,
+      text: "Something went wrong",
+      color: "error",
+    };
   }
 };
 
 const githubLogin = async () => {
   try {
+    await signInWithPopup(auth, new GithubAuthProvider());
+  } catch (e: any) {
+    if (e.code === "auth/account-exists-with-different-credential") {
+      emailExistsError.value = true;
+
+      return;
+    }
+
+    console.error(e);
+
     snackbar.value = {
       open: true,
-      text: "XAXAXAXA",
-      color: "success",
+      text: "Something went wrong",
+      color: "error",
     };
-
-    return;
-
-    await signInWithPopup(auth, new GithubAuthProvider());
-  } catch (error: any) {
-    console.log(JSON.parse(JSON.stringify(error)));
-
-    // Step 2: User's email already exists.
-    if (error.code === "auth/account-exists-with-different-credential") {
-      const credential = OAuthProvider.credentialFromError(error);
-
-      console.log(credential);
-      console.log(error.customData);
-
-      credentialFromError.value = credential;
-
-      const x = error?.customData?.email;
-
-      console.log(x);
-    }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.wrapper {
+  padding-top: 50px;
+}
+
+.alert-wrapper {
+  max-width: 400px;
+}
+
+.dark {
+  fill: white;
+}
+</style>

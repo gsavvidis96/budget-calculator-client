@@ -1,18 +1,18 @@
 <template>
-  <div
-    class="h-100 d-flex flex-column py-2 bg-secondaryBackground-lighten-1 text-textColor"
-  >
-    <v-btn variant="text" @click="toggleDark()" class="rounded-0">
-      <template v-slot:prepend>
-        <v-icon size="24px">mdi-theme-light-dark</v-icon>
-      </template>
+  <div class="h-100 d-flex flex-column">
+    <v-list>
+      <v-list-item color="primary" @click="toggleDark()">
+        <template v-slot:prepend>
+          <v-icon size="24px">mdi-theme-light-dark</v-icon>
+        </template>
 
-      Toggle Dark Mode
-    </v-btn>
+        <v-list-item-title v-text="'Toggle Dark Mode'"></v-list-item-title>
+      </v-list-item>
 
-    <client-only>
-      <buttons />
-    </client-only>
+      <client-only>
+        <buttons />
+      </client-only>
+    </v-list>
   </div>
 </template>
 

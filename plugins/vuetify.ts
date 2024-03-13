@@ -7,9 +7,6 @@ const light: ThemeDefinition = {
   colors: {
     primary: "#26a69a",
     border: "#eeeeee",
-    secondaryBackground: "#ffffff",
-    "secondaryBackground-lighten-1": "#ffffff",
-    textColor: "#424242",
   },
 };
 
@@ -19,7 +16,7 @@ const dark: ThemeDefinition = {
     primary: "#26a69a",
     border: "#424242",
     secondaryBackground: "#212121",
-    "secondaryBackground-lighten-1": "#424242",
+    surface: "#424242",
   },
 };
 

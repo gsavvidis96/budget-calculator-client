@@ -38,22 +38,18 @@ html {
   border: none;
 }
 
-.v-btn {
+.v-btn:not(.v-btn--icon) {
   text-transform: none;
   letter-spacing: normal;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto !important;
+  font-size: 16px;
+  padding: 12px 16px;
 
-  &:not(.v-btn--icon).v-btn--density-default {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: auto !important;
-    padding: 12px 16px;
-
-    & .v-btn__prepend {
-      margin: 0;
-      min-width: 56px;
-    }
+  & .v-btn__prepend {
+    margin-right: 12px;
   }
 }
 </style>
