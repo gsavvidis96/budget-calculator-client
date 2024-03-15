@@ -1,14 +1,26 @@
-import { defineStore } from "pinia";
+interface Snackbar {
+  open: boolean;
+  text?: string;
+  color?: string;
+}
 
 export const useBaseStore = defineStore("counter", () => {
   const drawer = ref(false);
-  const snackbar = ref<{
-    open: boolean;
-    text?: string;
-    color?: string;
-  }>({
+  const snackbar = ref<Snackbar>({
     open: false,
   });
+
+  const toggleDrawer = () => {
+    drawer.value = !drawer.value;
+  };
+
+  const closeDrawer = () => {
+    drawer.value = false;
+  };
+
+  const openSnackbar = (newSnackbar: Snackbar) => {
+    snackbar.value = newSnackbar;
+  };
 
   const closeSnackbar = () => {
     snackbar.value = {
@@ -16,5 +28,12 @@ export const useBaseStore = defineStore("counter", () => {
     };
   };
 
-  return { drawer, snackbar, closeSnackbar };
+  return {
+    drawer,
+    snackbar,
+    closeSnackbar,
+    toggleDrawer,
+    closeDrawer,
+    openSnackbar,
+  };
 });

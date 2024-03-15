@@ -59,7 +59,7 @@ const route = useRoute();
 const router = useRouter();
 const baseStore = useBaseStore();
 
-const { snackbar } = storeToRefs(baseStore);
+const { openSnackbar } = baseStore;
 const emailExistsError = ref<any>(false);
 
 const googleLogin = async () => {
@@ -72,17 +72,21 @@ const googleLogin = async () => {
   } catch (e) {
     console.error(e);
 
-    snackbar.value = {
+    openSnackbar({
       open: true,
       text: "Something went wrong",
       color: "error",
-    };
+    });
   }
 };
 
 const githubLogin = async () => {
   try {
     await signInWithPopup(auth, new GithubAuthProvider());
+
+    router.replace({
+      path: (route.query?.redirect as string) || "/budgets",
+    });
   } catch (e: any) {
     if (e.code === "auth/account-exists-with-different-credential") {
       emailExistsError.value = true;
@@ -92,11 +96,11 @@ const githubLogin = async () => {
 
     console.error(e);
 
-    snackbar.value = {
+    openSnackbar({
       open: true,
       text: "Something went wrong",
       color: "error",
-    };
+    });
   }
 };
 </script>

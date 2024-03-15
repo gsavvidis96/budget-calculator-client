@@ -21,7 +21,6 @@
 import Navbar from "@/components/Navbar.vue";
 import Sidebar from "@/components/sidebar/Sidebar.vue";
 import { useBaseStore } from "@/stores/base";
-import { storeToRefs } from "pinia";
 
 const baseStore = useBaseStore();
 const { closeSnackbar } = baseStore;

@@ -10,18 +10,17 @@
       icon="mdi-menu"
       variant="text"
       color="primary"
-      @click="drawer = !drawer"
+      @click="toggleDrawer"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useBaseStore } from "@/stores/base";
-import { storeToRefs } from "pinia";
 
 const baseStore = useBaseStore();
 
-const { drawer } = storeToRefs(baseStore);
+const { toggleDrawer } = baseStore;
 </script>
 
 <style scoped>

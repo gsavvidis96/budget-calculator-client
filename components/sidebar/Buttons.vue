@@ -38,18 +38,13 @@
 import { useIsCurrentUserLoaded, useCurrentUser } from "vuefire";
 import LogoutConfirmation from "@/components/LogoutConfirmation.vue";
 import { useBaseStore } from "@/stores/base";
-import { storeToRefs } from "pinia";
 
 const isCurrentUserLoaded = useIsCurrentUserLoaded();
 const user = useCurrentUser();
 const baseStore = useBaseStore();
-const { drawer } = storeToRefs(baseStore);
+const { closeDrawer } = baseStore;
 
 const dialog = ref(false);
-
-const closeDrawer = () => {
-  drawer.value = false;
-};
 
 const openLogoutDialog = () => {
   closeDrawer();
