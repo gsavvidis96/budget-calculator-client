@@ -1,6 +1,6 @@
 <template>
   <template v-if="isCurrentUserLoaded">
-    <v-list-item color="primary" to="/login" v-if="!user">
+    <v-list-item color="primary" to="/login" @click="closeDrawer" v-if="!user">
       <template v-slot:prepend>
         <v-icon size="24px">mdi-login</v-icon>
       </template>
@@ -9,7 +9,7 @@
     </v-list-item>
 
     <template v-if="user">
-      <v-list-item color="primary" to="/budgets">
+      <v-list-item color="primary" to="/budgets" @click="closeDrawer">
         <template v-slot:prepend>
           <v-icon size="24px">mdi-clipboard-list-outline</v-icon>
         </template>
@@ -17,7 +17,7 @@
         <v-list-item-title>My Budgets</v-list-item-title>
       </v-list-item>
 
-      <v-list-item color="primary" @click="onSignOut">
+      <v-list-item color="primary" @click="openLogoutDialog">
         <template v-slot:prepend>
           <v-icon size="24px">mdi-logout</v-icon>
         </template>
@@ -26,27 +26,44 @@
       </v-list-item>
     </template>
   </template>
+
+  <v-dialog v-model="dialog" width="100%">
+    <v-card class="dialog-card align-self-center pa-5">
+      <LogoutConfirmation @closeDialog="dialog = false" />
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { useIsCurrentUserLoaded, useCurrentUser } from "vuefire";
-import { useFirebaseAuth } from "vuefire";
-import { signOut } from "firebase/auth";
+import LogoutConfirmation from "@/components/LogoutConfirmation.vue";
+import { useBaseStore } from "@/stores/base";
+import { storeToRefs } from "pinia";
 
 const isCurrentUserLoaded = useIsCurrentUserLoaded();
 const user = useCurrentUser();
-const auth = useFirebaseAuth()!;
-const router = useRouter();
+const baseStore = useBaseStore();
+const { drawer } = storeToRefs(baseStore);
 
-const onSignOut = async () => {
-  try {
-    await signOut(auth);
+const dialog = ref(false);
 
-    router.replace({ path: "/" });
-  } catch (e) {
-    console.error(e);
-  }
+const closeDrawer = () => {
+  drawer.value = false;
+};
+
+const openLogoutDialog = () => {
+  closeDrawer();
+
+  dialog.value = true;
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.dialog-card {
+  width: 600px;
+
+  @media only screen and (max-width: 648px) {
+    width: 100%;
+  }
+}
+</style>
