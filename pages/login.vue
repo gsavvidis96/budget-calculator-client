@@ -9,7 +9,12 @@
     </div>
 
     <div class="d-flex flex-column">
-      <v-btn variant="outlined" @click="googleLogin" class="mb-2">
+      <v-btn
+        variant="outlined"
+        @click="login('google')"
+        class="mb-2"
+        :loading="loader === 'google'"
+      >
         <template v-slot:prepend>
           <GoogleIcon />
         </template>
@@ -17,7 +22,11 @@
         Sign in with Google
       </v-btn>
 
-      <v-btn variant="outlined" @click="githubLogin">
+      <v-btn
+        variant="outlined"
+        @click="login('github')"
+        :loading="loader === 'github'"
+      >
         <template v-slot:prepend>
           <GitHubIcon :class="{ dark: isDark }" />
         </template>
@@ -45,6 +54,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
+  signInWithCustomToken,
+  signOut,
 } from "firebase/auth";
 import GoogleIcon from "@/components/GoogleIcon.vue";
 import GitHubIcon from "@/components/GitHubIcon.vue";
@@ -58,49 +69,69 @@ const auth = useFirebaseAuth()!;
 const route = useRoute();
 const router = useRouter();
 const baseStore = useBaseStore();
+const {
+  public: { apiUrl },
+} = useRuntimeConfig();
 
 const { openSnackbar } = baseStore;
 const emailExistsError = ref<any>(false);
+const loader = ref<null | "google" | "github">(null);
 
-const googleLogin = async () => {
+const login = async (method: "google" | "github") => {
   try {
-    await signInWithPopup(auth, new GoogleAuthProvider());
+    let provider;
+
+    switch (method) {
+      case "google":
+        provider = new GoogleAuthProvider();
+        break;
+      case "github":
+        provider = new GithubAuthProvider();
+        break;
+      default:
+        throw new Error("unsupported provider");
+    } // create provider based on login method
+
+    const res = await signInWithPopup(auth, provider); // login with popup
+
+    loader.value = method; // open loader
+
+    const idToken = await res.user.getIdToken(); // get idToken
+
+    const { customToken } = await $fetch<{
+      customToken: string;
+    }>(`${apiUrl}/auth/login`, {
+      method: "POST",
+      body: {
+        idToken,
+      },
+      parseResponse: (r) => JSON.parse(r),
+    }); // get custom token using idToken
+
+    await signInWithCustomToken(auth, customToken); // re-login with customToken
+
+    loader.value = null; // close loader
 
     router.replace({
       path: (route.query?.redirect as string) || "/budgets",
-    });
-  } catch (e) {
-    console.error(e);
-
-    openSnackbar({
-      open: true,
-      text: "Something went wrong",
-      color: "error",
-    });
-  }
-};
-
-const githubLogin = async () => {
-  try {
-    await signInWithPopup(auth, new GithubAuthProvider());
-
-    router.replace({
-      path: (route.query?.redirect as string) || "/budgets",
-    });
+    }); // navigate away
   } catch (e: any) {
-    if (e.code === "auth/account-exists-with-different-credential") {
-      emailExistsError.value = true;
+    if (e.code === "auth/popup-closed-by-user") return; // if user closed the popup do nothing
 
-      return;
-    }
+    signOut(auth); // always signout on error
 
-    console.error(e);
+    if (e.code === "auth/account-exists-with-different-credential")
+      return (emailExistsError.value = true); // show alert if account already exists with different provider
+
+    console.error(e); // log error
 
     openSnackbar({
       open: true,
       text: "Something went wrong",
       color: "error",
-    });
+    }); // open snackbar
+
+    loader.value = null; // close loader
   }
 };
 </script>

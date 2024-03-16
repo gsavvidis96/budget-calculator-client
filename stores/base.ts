@@ -4,7 +4,7 @@ interface Snackbar {
   color?: string;
 }
 
-export const useBaseStore = defineStore("counter", () => {
+export const useBaseStore = defineStore("base", () => {
   const drawer = ref(false);
   const snackbar = ref<Snackbar>({
     open: false,
