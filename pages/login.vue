@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1 px-5 pb-5 align-center wrapper">
+  <div class="page-wrapper">
     <div class="mb-6 alert-wrapper">
       <v-alert
         text="In order to use the application, please first sign in."
@@ -12,8 +12,9 @@
       <v-btn
         variant="outlined"
         @click="login('google')"
-        class="mb-2"
+        class="mb-3"
         :loading="loader === 'google'"
+        size="large"
       >
         <template v-slot:prepend>
           <GoogleIcon />
@@ -26,6 +27,7 @@
         variant="outlined"
         @click="login('github')"
         :loading="loader === 'github'"
+        size="large"
       >
         <template v-slot:prepend>
           <GitHubIcon :class="{ dark: isDark }" />
@@ -137,7 +139,7 @@ const login = async (method: "google" | "github") => {
 </script>
 
 <style scoped>
-.wrapper {
+.page-wrapper {
   padding-top: 50px;
 }
 

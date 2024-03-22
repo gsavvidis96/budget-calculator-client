@@ -1,10 +1,10 @@
 <template>
-  <div class="d-flex flex-column align-center wrapper">
+  <div class="d-flex flex-column align-center wrapper ga-4">
     <div class="body-1 text-center font-weight-bold">
       Logout from Budget Calculator?
     </div>
 
-    <div class="d-flex align-center btn-wrapper">
+    <div class="d-flex align-center ga-2">
       <v-btn variant="text" color="primary" @click="$emit('closeDialog')"
         >Cancel</v-btn
       >
@@ -37,12 +37,4 @@ const onSignOut = async () => {
 };
 </script>
 
-<style scoped>
-.wrapper {
-  gap: 16px;
-}
-
-.btn-wrapper {
-  gap: 8px;
-}
-</style>
+<style scoped></style>

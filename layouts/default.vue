@@ -29,12 +29,15 @@ const { drawer, snackbar } = storeToRefs(baseStore);
 </script>
 
 <style lang="scss">
+// VUETIFY OVERRIDES
+
 html {
   overflow-y: auto;
 }
 
 .v-navigation-drawer {
-  border: none;
+  border: none !important;
+  background-color: rgb(var(--v-theme-sidebarBackground)) !important;
 }
 
 .v-btn:not(.v-btn--icon) {
@@ -44,11 +47,47 @@ html {
   align-items: center;
   justify-content: flex-start;
   height: auto !important;
-  font-size: 16px;
-  padding: 12px 16px;
 
-  & .v-btn__prepend {
-    margin-right: 12px;
+  &.v-btn--size-large {
+    font-size: 16px;
+    padding: 8px 22px;
+    & .v-btn__prepend {
+      margin-right: 12px;
+    }
+  }
+
+  &.v-btn--size-default {
+    font-size: 16px;
+    padding: 6px 16px;
+    & .v-btn__prepend {
+      margin-right: 8px;
+    }
+  }
+
+  &.v-btn--size-small {
+    font-size: 14px;
+    padding: 5px 10px;
+
+    & .v-btn__prepend {
+      margin-right: 8px;
+    }
+  }
+}
+
+// GLOBAL STYLES
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 20px;
+  align-items: center;
+}
+
+.inner-wrapper {
+  width: 1488px;
+
+  @media only screen and (max-width: 1528px) {
+    width: 100%;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-wrapper">
     <h1>SINGLE BUDGET PAGE (CLIENT SIDE)</h1>
   </div>
 </template>
