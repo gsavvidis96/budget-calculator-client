@@ -35,9 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { useIsCurrentUserLoaded, useCurrentUser } from "vuefire";
+import { useIsCurrentUserLoaded } from "vuefire";
 import LogoutConfirmation from "@/components/LogoutConfirmation.vue";
 import { useBaseStore } from "@/stores/base";
+import { useCurrentUser } from "@/helpers/useCurrentUser";
 
 const isCurrentUserLoaded = useIsCurrentUserLoaded();
 const user = useCurrentUser();

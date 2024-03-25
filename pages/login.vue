@@ -80,6 +80,8 @@ const emailExistsError = ref<any>(false);
 const loader = ref<null | "google" | "github">(null);
 
 const login = async (method: "google" | "github") => {
+  if (loader.value) return;
+
   try {
     let provider;
 

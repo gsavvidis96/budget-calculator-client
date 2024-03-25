@@ -1,5 +1,4 @@
-import { getCurrentUser } from "vuefire";
-
+import { getCurrentUser } from "@/helpers/getCurrentUser";
 export default defineNuxtRouteMiddleware(async (to) => {
   const user = await getCurrentUser();
 
