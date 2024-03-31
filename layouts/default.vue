@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import Navbar from "@/components/Navbar.vue";
 import Sidebar from "@/components/sidebar/Sidebar.vue";
-import { useBaseStore } from "@/stores/base";
 
 const baseStore = useBaseStore();
 const { closeSnackbar } = baseStore;
@@ -45,7 +44,6 @@ html {
   letter-spacing: normal;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   height: auto !important;
 
   &.v-btn--size-large {
@@ -87,6 +85,14 @@ html {
   width: 1488px;
 
   @media only screen and (max-width: 1528px) {
+    width: 100%;
+  }
+}
+
+.dialog-card {
+  width: 600px;
+
+  @media only screen and (max-width: 648px) {
     width: 100%;
   }
 }

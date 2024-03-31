@@ -7,9 +7,9 @@ const light: ThemeDefinition = {
   colors: {
     primary: "#26a69a",
     border: "#eeeeee",
-    navbarBackground: "#ffffff",
+    navbarBackground: "#fafafa",
     sidebarBackground: "#ffffff",
-    budgetCardBackground: "#fafafa",
+    budgetCardBackground: "#F5F5F5",
   },
 };
 

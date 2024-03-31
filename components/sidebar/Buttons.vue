@@ -37,13 +37,11 @@
 <script setup lang="ts">
 import { useIsCurrentUserLoaded } from "vuefire";
 import LogoutConfirmation from "@/components/LogoutConfirmation.vue";
-import { useBaseStore } from "@/stores/base";
 import { useCurrentUser } from "@/helpers/useCurrentUser";
 
 const isCurrentUserLoaded = useIsCurrentUserLoaded();
 const user = useCurrentUser();
-const baseStore = useBaseStore();
-const { closeDrawer } = baseStore;
+const { closeDrawer } = useBaseStore();
 
 const dialog = ref(false);
 
@@ -54,12 +52,4 @@ const openLogoutDialog = () => {
 };
 </script>
 
-<style scoped lang="scss">
-.dialog-card {
-  width: 600px;
-
-  @media only screen and (max-width: 648px) {
-    width: 100%;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

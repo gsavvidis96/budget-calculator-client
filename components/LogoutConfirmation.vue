@@ -5,11 +5,15 @@
     </div>
 
     <div class="d-flex align-center ga-2">
-      <v-btn variant="text" color="primary" @click="$emit('closeDialog')"
+      <v-btn
+        variant="text"
+        color="primary"
+        size="small"
+        @click="$emit('closeDialog')"
         >Cancel</v-btn
       >
 
-      <v-btn variant="elevated" color="primary" @click="onSignOut"
+      <v-btn variant="elevated" color="primary" size="small" @click="onSignOut"
         >Logout</v-btn
       >
     </div>

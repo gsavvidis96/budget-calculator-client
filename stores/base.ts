@@ -23,9 +23,7 @@ export const useBaseStore = defineStore("base", () => {
   };
 
   const closeSnackbar = () => {
-    snackbar.value = {
-      open: false,
-    };
+    snackbar.value.open = false;
   };
 
   return {

@@ -16,11 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { useBaseStore } from "@/stores/base";
-
-const baseStore = useBaseStore();
-
-const { toggleDrawer } = baseStore;
+const { toggleDrawer } = useBaseStore();
 </script>
 
 <style scoped>

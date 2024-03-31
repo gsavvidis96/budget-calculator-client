@@ -70,12 +70,11 @@ definePageMeta({
 const auth = useFirebaseAuth()!;
 const route = useRoute();
 const router = useRouter();
-const baseStore = useBaseStore();
+const { openSnackbar } = useBaseStore();
 const {
   public: { apiUrl },
 } = useRuntimeConfig();
 
-const { openSnackbar } = baseStore;
 const emailExistsError = ref<any>(false);
 const loader = ref<null | "google" | "github">(null);
 

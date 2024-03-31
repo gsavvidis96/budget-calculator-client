@@ -24,11 +24,20 @@ export default defineNuxtConfig({
     },
     "@pinia/nuxt",
     "@vueuse/nuxt",
+    "dayjs-nuxt",
+    "@nuxtjs/google-fonts",
   ],
   vite: {
     vue: {
       template: {
         transformAssetUrls,
+      },
+    },
+  },
+  googleFonts: {
+    families: {
+      Roboto: {
+        wght: [100, 300, 400, 500, 700, 900],
       },
     },
   },
