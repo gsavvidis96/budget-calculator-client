@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { getJwt } from "~/helpers/getJwt";
 import type { BudgetListItem } from "~/helpers/types";
+import { useTrimmedText } from "~/helpers/useTrimmedText";
 
 const {
   public: { apiUrl },
@@ -62,6 +63,8 @@ const initialValues = ref({
 });
 const loader = ref(false);
 const error = ref(false);
+
+const trimmedTitle = useTrimmedText(title, 20);
 
 const hasChanges = computed(
   () =>
@@ -99,7 +102,7 @@ const onSubmit = async () => {
     openSnackbar({
       open: true,
       color: "success",
-      text: `Budget "${title.value}" was ${
+      text: `Budget "${trimmedTitle.value}" was ${
         Boolean(budget.value) ? "updated" : "added"
       }.`,
     });

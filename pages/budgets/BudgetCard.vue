@@ -66,14 +66,18 @@
     </v-btn>
   </NuxtLink>
 
-  <v-menu :activator="`#delete-menu-${budget.id}`" v-model="deleteMenu">
+  <v-menu
+    :activator="`#delete-menu-${budget.id}`"
+    v-model="deleteMenu"
+    :scrim="true"
+  >
     <div
       class="d-flex flex-column elevation-5 pa-3 ga-4 delete-menu rounded"
       @click.stop
     >
       <div class="text-subtitle-1 text-center">
         Are you sure you want to delete budget "<strong>{{
-          budget.title
+          trimmedTitle
         }}</strong
         >" ?
       </div>
@@ -98,7 +102,7 @@
     </div>
   </v-menu>
 
-  <v-dialog v-model="dialog" width="100%" :fullscreen="xs">
+  <v-dialog v-model="dialog" width="auto" :fullscreen="xs">
     <v-card class="dialog-card align-self-center pa-5">
       <v-btn
         icon="mdi-close"
@@ -122,6 +126,7 @@ import { useDisplay } from "vuetify";
 import { type BudgetListItem } from "@/helpers/types";
 import { getJwt } from "~/helpers/getJwt";
 import BudgetForm from "./BudgetForm.vue";
+import { useTrimmedText } from "@/helpers/useTrimmedText";
 
 const { xs } = useDisplay();
 
@@ -137,6 +142,8 @@ const props = defineProps<{
 const { openSnackbar } = useBaseStore();
 
 const { budget, refresh } = toRefs(props);
+
+const trimmedTitle = useTrimmedText(toRef(budget.value.title), 20);
 
 const loader = ref(false);
 const deleteMenu = ref(false);
@@ -205,7 +212,7 @@ const onDelete = async () => {
     openSnackbar({
       open: true,
       color: "warning",
-      text: `Budget "${title}" was deleted.`,
+      text: `Budget "${trimmedTitle.value}" was deleted.`,
     });
 
     deleteMenu.value = false;
@@ -244,6 +251,5 @@ const onDelete = async () => {
 
 .delete-menu {
   background-color: rgb(var(--v-theme-budgetCardBackground));
-  border: 1px solid rgb(var(--v-theme-navbarBackground));
 }
 </style>

@@ -72,6 +72,12 @@ html {
   }
 }
 
+.v-menu {
+  .v-overlay__scrim {
+    background-color: transparent;
+  }
+}
+
 // GLOBAL STYLES
 .page-wrapper {
   display: flex;

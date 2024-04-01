@@ -27,7 +27,7 @@
     </template>
   </template>
 
-  <v-dialog v-model="dialog" width="100%">
+  <v-dialog v-model="dialog" width="auto">
     <v-card class="dialog-card align-self-center pa-5">
       <LogoutConfirmation @closeDialog="dialog = false" />
     </v-card>
