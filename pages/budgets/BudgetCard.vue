@@ -103,7 +103,7 @@
   </v-menu>
 
   <v-dialog v-model="dialog" width="auto" :fullscreen="xs">
-    <v-card class="dialog-card align-self-center pa-5">
+    <div class="dialog-card align-self-center pa-5">
       <v-btn
         icon="mdi-close"
         class="ml-auto mb-1"
@@ -117,7 +117,7 @@
         :refresh="refresh"
         @closeDialog="dialog = false"
       />
-    </v-card>
+    </div>
   </v-dialog>
 </template>
 

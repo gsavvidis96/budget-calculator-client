@@ -78,6 +78,13 @@ html {
   }
 }
 
+.v-dialog {
+  .v-overlay__scrim {
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+  }
+}
+
 // GLOBAL STYLES
 .page-wrapper {
   display: flex;
@@ -97,6 +104,8 @@ html {
 
 .dialog-card {
   width: 600px;
+  background-color: rgb(var(--v-theme-budgetCardBackground));
+  border-radius: 4px;
 
   @media only screen and (max-width: 648px) {
     width: 100%;
