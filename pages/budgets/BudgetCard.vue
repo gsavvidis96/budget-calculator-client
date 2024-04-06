@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="`/budgets/${budget.id}`"
-    class="d-flex budget-card rounded pa-6 ga-2"
+    class="d-flex budget-card rounded pa-4 pa-sm-6 ga-2"
   >
     <div class="d-flex flex-column ga-2 flex-grow-1 budget-info">
       <div class="text-h5 font-weight-bold text-capitalize">
@@ -196,16 +196,13 @@ const onDelete = async () => {
   try {
     const jwt = await getJwt();
 
-    const { title } = await $fetch<BudgetListItem>(
-      `${apiUrl}/budgets/${budget.value.id}`,
-      {
-        method: "delete",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-        parseResponse: (r) => JSON.parse(r),
-      }
-    );
+    await $fetch<BudgetListItem>(`${apiUrl}/budgets/${budget.value.id}`, {
+      method: "delete",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+      parseResponse: (r) => JSON.parse(r),
+    });
 
     await refresh.value();
 

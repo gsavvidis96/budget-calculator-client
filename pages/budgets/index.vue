@@ -11,34 +11,36 @@
           density="compact"
           hide-details
           color="primary"
+          v-model="search"
+          :append-inner-icon="search ? 'mdi-close' : undefined"
+          @click:append-inner="search = ''"
         />
 
-        <template v-if="xs">
+        <v-badge color="primary" dot :model-value="sortBy !== DEFAULT_SORTBY">
           <v-btn
-            icon="mdi-sort"
-            density="comfortable"
-            size="small"
+            :icon="xs ? 'mdi-sort' : undefined"
+            :density="xs ? 'comfortable' : undefined"
+            :size="xs ? 'small' : undefined"
+            :prepend-icon="xs ? undefined : 'mdi-sort'"
             variant="text"
-          />
-
-          <v-btn
-            icon="mdi-plus"
-            density="comfortable"
-            size="small"
-            color="primary"
-            @click="dialog = true"
-          />
-        </template>
-
-        <template v-else>
-          <v-btn prepend-icon="mdi-sort" class="mr-auto" variant="text"
-            >Sort by</v-btn
+            id="sortby-menu"
           >
+            <template v-slot:default v-if="!xs"> Sort by </template>
+          </v-btn></v-badge
+        >
 
-          <v-btn prepend-icon="mdi-plus" color="primary" @click="dialog = true"
-            >New</v-btn
-          >
-        </template>
+        <v-btn
+          :icon="xs ? 'mdi-plus' : undefined"
+          :density="xs ? 'comfortable' : undefined"
+          :size="xs ? 'small' : undefined"
+          :prepend-icon="xs ? undefined : 'mdi-plus'"
+          id="sortby-menu"
+          color="primary"
+          class="ml-auto"
+          @click="dialog = true"
+        >
+          <template v-slot:default v-if="!xs"> New </template>
+        </v-btn>
       </div>
 
       <v-progress-linear
@@ -98,6 +100,32 @@
       <budget-form :refresh="refresh" @closeDialog="dialog = false" />
     </div>
   </v-dialog>
+
+  <v-menu activator="#sortby-menu" v-model="sortByMenu" :scrim="true">
+    <div
+      class="d-flex flex-column elevation-5 sortby-menu rounded overflow-hidden"
+      @click.stop
+    >
+      <div
+        v-for="sortItem in sortMenu"
+        :key="sortItem.label"
+        class="d-flex align-center ga-4 sortby-item pa-2"
+        :class="{ active: sortBy === `${sortItem.value}:${sortItem.direcion}` }"
+        @click="onChangeSortBy(`${sortItem.value}:${sortItem.direcion}`)"
+      >
+        <div class="text-subtitle-1">{{ sortItem.label }}</div>
+
+        <v-chip
+          size="small"
+          v-if="sortItem.isDefault"
+          variant="outlined"
+          class="font-weight-medium"
+        >
+          Default
+        </v-chip>
+      </div>
+    </div>
+  </v-menu>
 </template>
 
 <script setup lang="ts">
@@ -106,6 +134,35 @@ import { getJwt } from "~/helpers/getJwt";
 import BudgetCard from "./BudgetCard.vue";
 import { type BudgetListItem } from "@/helpers/types";
 import BudgetForm from "./BudgetForm.vue";
+
+const DEFAULT_SORTBY = "created_at:desc";
+
+const sortMenu = [
+  {
+    label: "Creation Date (DESC)",
+    isDefault: true,
+    value: "created_at",
+    direcion: "desc",
+  },
+  {
+    label: "Creation Date (ASC)",
+    isDefault: false,
+    value: "created_at",
+    direcion: "asc",
+  },
+  {
+    label: "Balance (DESC)",
+    isDefault: false,
+    value: "balance",
+    direcion: "desc",
+  },
+  {
+    label: "Balance (ASC)",
+    isDefault: false,
+    value: "balance",
+    direcion: "asc",
+  },
+];
 
 const { xs } = useDisplay();
 
@@ -119,6 +176,10 @@ definePageMeta({
 
 const dialog = ref(false);
 const initialFetch = ref(true);
+const sortByMenu = ref(false);
+const sortBy = ref(DEFAULT_SORTBY);
+const search = ref("");
+const debouncedSearch = ref("");
 
 const jwt = await getJwt();
 
@@ -128,22 +189,54 @@ const { data, pending, error, refresh } = await useLazyFetch<{
   headers: {
     Authorization: `Bearer ${jwt}`,
   },
+  query: {
+    sort: sortBy,
+    search: debouncedSearch,
+  },
   parseResponse: (r) => JSON.parse(r),
 });
 
-onMounted(() => {
-  watch(data, () => {
-    if (initialFetch.value) initialFetch.value = false;
-  });
+const onChangeSortBy = (newSortBy: string) => {
+  sortBy.value = newSortBy;
+
+  sortByMenu.value = false;
+};
+
+watch(
+  search,
+  useDebounceFn(() => {
+    debouncedSearch.value = search.value;
+  }, 500)
+);
+
+watch(data, () => {
+  if (initialFetch.value) initialFetch.value = false;
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .filters {
   background-color: rgb(var(--v-theme-budgetCardBackground));
 }
 
 .search-field {
   width: 400px;
+}
+
+.sortby-menu {
+  background-color: rgb(var(--v-theme-navbarBackground));
+
+  .sortby-item {
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: rgb(var(--v-theme-budgetCardBackground));
+    }
+
+    &.active {
+      background-color: rgb(var(--v-theme-primary));
+    }
+  }
 }
 </style>
