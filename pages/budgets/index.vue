@@ -60,10 +60,12 @@
         ></v-progress-circular>
 
         <template v-else>
-          <div v-if="data?.budgets?.length === 0">
+          <div v-if="!error && !pending && data?.budgets?.length === 0">
             <v-alert
-              text="You have no budgets yet"
-              type="info"
+              :text="
+                debouncedSearch ? 'No budgets found' : 'You have no budgets yet'
+              "
+              :type="debouncedSearch ? 'warning' : 'info'"
               variant="tonal"
             ></v-alert>
           </div>
@@ -181,13 +183,11 @@ const sortBy = ref(DEFAULT_SORTBY);
 const search = ref("");
 const debouncedSearch = ref("");
 
-const jwt = await getJwt();
-
 const { data, pending, error, refresh } = await useLazyFetch<{
   budgets: BudgetListItem[];
 }>(`${apiUrl}/budgets`, {
   headers: {
-    Authorization: `Bearer ${jwt}`,
+    Authorization: `Bearer ${await getJwt()}`,
   },
   query: {
     sort: sortBy,
