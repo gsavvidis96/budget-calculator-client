@@ -36,7 +36,7 @@ html {
 
 .v-navigation-drawer {
   border: none !important;
-  background-color: rgb(var(--v-theme-sidebarBackground)) !important;
+  background-color: rgb(var(--v-theme-background2)) !important;
 }
 
 .v-btn:not(.v-btn--icon) {
@@ -104,11 +104,18 @@ html {
 
 .dialog-card {
   width: 600px;
-  background-color: rgb(var(--v-theme-budgetCardBackground));
+  background-color: rgb(var(--v-theme-background3));
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 
   @media only screen and (max-width: 648px) {
     width: 100%;
+  }
+
+  @media only screen and (max-width: 599px) {
+    border-radius: 0px;
   }
 }
 </style>

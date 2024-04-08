@@ -7,9 +7,9 @@ const light: ThemeDefinition = {
   colors: {
     primary: "#26a69a",
     border: "#eeeeee",
-    navbarBackground: "#fafafa",
-    sidebarBackground: "#ffffff",
-    budgetCardBackground: "#F5F5F5",
+    background1: "#fafafa",
+    background2: "#ffffff",
+    background3: "#f5f5f5",
   },
 };
 
@@ -18,9 +18,9 @@ const dark: ThemeDefinition = {
   colors: {
     primary: "#26a69a",
     border: "#424242",
-    navbarBackground: "#212121",
-    sidebarBackground: "#424242",
-    budgetCardBackground: "#424242",
+    background1: "#212121",
+    background2: "#424242",
+    background3: "#424242",
   },
 };
 

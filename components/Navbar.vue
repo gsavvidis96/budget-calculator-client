@@ -22,7 +22,7 @@ const { toggleDrawer } = useBaseStore();
 <style scoped>
 .navbar {
   height: 64px;
-  background-color: rgb(var(--v-theme-navbarBackground));
+  background-color: rgb(var(--v-theme-background1));
   border-bottom: 1px solid rgb(var(--v-theme-border));
 }
 

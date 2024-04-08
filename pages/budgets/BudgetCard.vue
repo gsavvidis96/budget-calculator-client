@@ -102,12 +102,13 @@
     </div>
   </v-menu>
 
-  <v-dialog v-model="dialog" width="auto" :fullscreen="xs">
+  <v-dialog v-model="dialog" :fullscreen="xs">
     <div class="dialog-card align-self-center pa-5">
       <v-btn
         icon="mdi-close"
         class="ml-auto mb-1"
         density="comfortable"
+        variant="text"
         @click="dialog = false"
         v-if="xs"
       />
@@ -231,13 +232,13 @@ const onDelete = async () => {
 .budget-card {
   cursor: pointer;
   border: 1px solid rgb(var(--v-theme-border));
-  background-color: rgb(var(--v-theme-navbarBackground));
+  background-color: rgb(var(--v-theme-background1));
   transition: all 0.2s;
   text-decoration: none;
   color: inherit;
 
   &:hover {
-    background-color: rgb(var(--v-theme-budgetCardBackground));
+    background-color: rgb(var(--v-theme-background3));
   }
 }
 
@@ -247,6 +248,6 @@ const onDelete = async () => {
 }
 
 .delete-menu {
-  background-color: rgb(var(--v-theme-budgetCardBackground));
+  background-color: rgb(var(--v-theme-background3));
 }
 </style>

@@ -89,13 +89,14 @@
     </div>
   </div>
 
-  <v-dialog v-model="dialog" width="auto" :fullscreen="xs">
+  <v-dialog v-model="dialog" :fullscreen="xs">
     <div class="dialog-card align-self-center pa-5">
       <v-btn
         icon="mdi-close"
         class="ml-auto mb-1"
         density="comfortable"
         @click="dialog = false"
+        variant="text"
         v-if="xs"
       />
 
@@ -105,7 +106,7 @@
 
   <v-menu activator="#sortby-menu" v-model="sortByMenu" :scrim="true">
     <div
-      class="d-flex flex-column elevation-5 sortby-menu rounded overflow-hidden"
+      class="d-flex flex-column elevation-5 sortby-menu rounded overflow-hidden bg-background"
       @click.stop
     >
       <div
@@ -216,7 +217,7 @@ watch(data, () => {
 
 <style scoped lang="scss">
 .filters {
-  background-color: rgb(var(--v-theme-budgetCardBackground));
+  background-color: rgb(var(--v-theme-background3));
 }
 
 .search-field {
@@ -224,18 +225,19 @@ watch(data, () => {
 }
 
 .sortby-menu {
-  background-color: rgb(var(--v-theme-navbarBackground));
+  background-color: rgb(var(--v-theme-background1));
 
   .sortby-item {
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover {
-      background-color: rgb(var(--v-theme-budgetCardBackground));
+      background-color: rgb(var(--v-theme-background3));
     }
 
     &.active {
       background-color: rgb(var(--v-theme-primary));
+      color: white;
     }
   }
 }
