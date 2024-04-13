@@ -113,18 +113,13 @@
         v-if="xs"
       />
 
-      <budget-form
-        :budget="budget"
-        :refresh="refresh"
-        @closeDialog="dialog = false"
-      />
+      <budget-form :budget="budget" @closeDialog="dialog = false" />
     </div>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
-import { type BudgetListItem } from "@/helpers/types";
 import { getJwt } from "~/helpers/getJwt";
 import BudgetForm from "./BudgetForm.vue";
 import { useTrimmedText } from "@/helpers/useTrimmedText";
@@ -137,12 +132,13 @@ const {
 
 const props = defineProps<{
   budget: BudgetListItem;
-  refresh: Function;
 }>();
 
 const { openSnackbar } = useBaseStore();
 
-const { budget, refresh } = toRefs(props);
+const { budget } = toRefs(props);
+
+const { fetchBudgets } = useBudgetStore();
 
 const trimmedTitle = useTrimmedText(toRef(budget.value.title), 20);
 
@@ -171,7 +167,7 @@ const onTogglePin = async () => {
       }
     );
 
-    await refresh.value();
+    await fetchBudgets({ refresh: true });
 
     openSnackbar({
       open: true,
@@ -205,7 +201,7 @@ const onDelete = async () => {
       parseResponse: (r) => JSON.parse(r),
     });
 
-    await refresh.value();
+    await fetchBudgets({ refresh: true });
 
     openSnackbar({
       open: true,

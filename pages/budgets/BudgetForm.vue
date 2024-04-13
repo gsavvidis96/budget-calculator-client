@@ -37,7 +37,6 @@
 
 <script setup lang="ts">
 import { getJwt } from "~/helpers/getJwt";
-import type { BudgetListItem } from "~/helpers/types";
 import { useTrimmedText } from "~/helpers/useTrimmedText";
 
 const {
@@ -46,14 +45,15 @@ const {
 
 const props = defineProps<{
   budget?: BudgetListItem;
-  refresh: Function;
 }>();
 
 const emit = defineEmits(["closeDialog"]);
 
 const { openSnackbar } = useBaseStore();
 
-const { budget, refresh } = toRefs(props);
+const { fetchBudgets } = useBudgetStore();
+
+const { budget } = toRefs(props);
 
 const title = ref(budget.value?.title || "");
 const is_pinned = ref(budget.value?.is_pinned || false);
@@ -97,7 +97,7 @@ const onSubmit = async () => {
       }
     );
 
-    await refresh.value();
+    await fetchBudgets({ refresh: true });
 
     openSnackbar({
       open: true,

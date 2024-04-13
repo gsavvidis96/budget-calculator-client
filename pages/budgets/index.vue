@@ -11,12 +11,12 @@
           density="compact"
           hide-details
           color="primary"
-          v-model="search"
-          :append-inner-icon="search ? 'mdi-close' : undefined"
-          @click:append-inner="search = ''"
+          v-model="searchInput"
+          :append-inner-icon="searchInput ? 'mdi-close' : undefined"
+          @click:append-inner="searchInput = ''"
         />
 
-        <v-badge color="primary" dot :model-value="sortBy !== DEFAULT_SORTBY">
+        <v-badge color="primary" dot :model-value="sort !== DEFAULT_SORTBY">
           <v-btn
             :icon="xs ? 'mdi-sort' : undefined"
             :density="xs ? 'comfortable' : undefined"
@@ -46,45 +46,36 @@
       <v-progress-linear
         color="primary"
         indeterminate
-        v-if="pending && !initialFetch"
+        v-if="budgetsLoader"
       ></v-progress-linear>
 
       <div class="d-flex flex-column flex-grow-1 ga-4">
-        <v-progress-circular
-          color="primary"
-          indeterminate
-          class="ma-auto"
-          size="90"
-          width="5"
-          v-if="pending && initialFetch"
-        ></v-progress-circular>
+        <div
+          v-if="
+            !error && !budgetsLoader && budgetsResponse?.budgets?.length === 0
+          "
+        >
+          <v-alert
+            :text="search ? 'No budgets found' : 'You have no budgets yet'"
+            :type="search ? 'warning' : 'info'"
+            variant="tonal"
+          ></v-alert>
+        </div>
 
-        <template v-else>
-          <div v-if="!error && !pending && data?.budgets?.length === 0">
-            <v-alert
-              :text="
-                debouncedSearch ? 'No budgets found' : 'You have no budgets yet'
-              "
-              :type="debouncedSearch ? 'warning' : 'info'"
-              variant="tonal"
-            ></v-alert>
-          </div>
+        <div v-if="error">
+          <v-alert
+            text="Couldn't fetch budgets"
+            type="error"
+            variant="tonal"
+          ></v-alert>
+        </div>
 
-          <div v-if="error">
-            <v-alert
-              text="Couldn't fetch budgets"
-              type="error"
-              variant="tonal"
-            ></v-alert>
-          </div>
-
-          <budget-card
-            v-for="budget in data?.budgets"
-            :budget="budget"
-            :key="budget.id"
-            :refresh="refresh"
-          />
-        </template>
+        <budget-card
+          v-if="!error"
+          v-for="budget in budgetsResponse?.budgets"
+          :budget="budget"
+          :key="budget.id"
+        />
       </div>
     </div>
   </div>
@@ -100,20 +91,20 @@
         v-if="xs"
       />
 
-      <budget-form :refresh="refresh" @closeDialog="dialog = false" />
+      <budget-form @closeDialog="dialog = false" />
     </div>
   </v-dialog>
 
-  <v-menu activator="#sortby-menu" v-model="sortByMenu" :scrim="true">
+  <v-menu activator="#sortby-menu" v-model="sortMenu" :scrim="true">
     <div
       class="d-flex flex-column elevation-5 sortby-menu rounded overflow-hidden bg-background"
       @click.stop
     >
       <div
-        v-for="sortItem in sortMenu"
+        v-for="sortItem in sortMenuItems"
         :key="sortItem.label"
         class="d-flex align-center ga-4 sortby-item pa-2"
-        :class="{ active: sortBy === `${sortItem.value}:${sortItem.direcion}` }"
+        :class="{ active: sort === `${sortItem.value}:${sortItem.direcion}` }"
         @click="onChangeSortBy(`${sortItem.value}:${sortItem.direcion}`)"
       >
         <div class="text-subtitle-1">{{ sortItem.label }}</div>
@@ -133,14 +124,10 @@
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
-import { getJwt } from "~/helpers/getJwt";
 import BudgetCard from "./BudgetCard.vue";
-import { type BudgetListItem } from "@/helpers/types";
 import BudgetForm from "./BudgetForm.vue";
 
-const DEFAULT_SORTBY = "created_at:desc";
-
-const sortMenu = [
+const sortMenuItems = [
   {
     label: "Creation Date (DESC)",
     isDefault: true,
@@ -169,49 +156,51 @@ const sortMenu = [
 
 const { xs } = useDisplay();
 
-const {
-  public: { apiUrl },
-} = useRuntimeConfig();
-
 definePageMeta({
   middleware: "requires-auth",
 });
 
-const dialog = ref(false);
-const initialFetch = ref(true);
-const sortByMenu = ref(false);
-const sortBy = ref(DEFAULT_SORTBY);
-const search = ref("");
-const debouncedSearch = ref("");
+const budgetStore = useBudgetStore();
 
-const { data, pending, error, refresh } = await useLazyFetch<{
-  budgets: BudgetListItem[];
-}>(`${apiUrl}/budgets`, {
-  headers: {
-    Authorization: `Bearer ${await getJwt()}`,
-  },
-  query: {
-    sort: sortBy,
-    search: debouncedSearch,
-  },
-  parseResponse: (r) => JSON.parse(r),
+const { fetchBudgets } = budgetStore;
+
+const { sort, search, budgetsResponse, budgetsLoader } =
+  storeToRefs(budgetStore);
+
+const dialog = ref(false);
+const sortMenu = ref(false);
+const searchInput = ref("");
+const error = ref(false);
+
+const onFetchBudgets = async ({ refresh = false } = {}) => {
+  try {
+    await fetchBudgets({ refresh });
+  } catch (e) {
+    console.error(e);
+
+    error.value = true;
+  }
+};
+
+onMounted(() => {
+  onFetchBudgets();
 });
 
-const onChangeSortBy = (newSortBy: string) => {
-  sortBy.value = newSortBy;
+const onChangeSortBy = (newSort: string) => {
+  sort.value = newSort;
 
-  sortByMenu.value = false;
+  sortMenu.value = false;
 };
 
 watch(
-  search,
+  searchInput,
   useDebounceFn(() => {
-    debouncedSearch.value = search.value;
+    search.value = searchInput.value;
   }, 500)
 );
 
-watch(data, () => {
-  if (initialFetch.value) initialFetch.value = false;
+watch([search, sort], () => {
+  onFetchBudgets({ refresh: true });
 });
 </script>
 
