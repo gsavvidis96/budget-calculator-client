@@ -9,7 +9,12 @@
     </v-list-item>
 
     <template v-if="user">
-      <v-list-item color="primary" to="/budgets" @click="closeDrawer">
+      <v-list-item
+        color="primary"
+        to="/budgets"
+        :active="route.path.includes('/budgets')"
+        @click="closeDrawer"
+      >
         <template v-slot:prepend>
           <v-icon size="24px">mdi-clipboard-list-outline</v-icon>
         </template>
@@ -42,6 +47,7 @@ import { useCurrentUser } from "@/helpers/useCurrentUser";
 const isCurrentUserLoaded = useIsCurrentUserLoaded();
 const user = useCurrentUser();
 const { closeDrawer } = useBaseStore();
+const route = useRoute();
 
 const dialog = ref(false);
 

@@ -70,6 +70,15 @@ html {
       margin-right: 8px;
     }
   }
+
+  &.v-btn--size-x-small {
+    font-size: 12px;
+    padding: 4px 8px;
+
+    & .v-btn__prepend {
+      margin-right: 6px;
+    }
+  }
 }
 
 .v-menu {
