@@ -182,9 +182,9 @@ const onTogglePin = async () => {
       color: "error",
       text: "Something went wrong.",
     });
+  } finally {
+    loader.value = false;
   }
-
-  loader.value = false;
 };
 
 const onDelete = async () => {
@@ -218,9 +218,9 @@ const onDelete = async () => {
       color: "error",
       text: "Something went wrong.",
     });
+  } finally {
+    deleteLoader.value = false;
   }
-
-  deleteLoader.value = false;
 };
 </script>
 

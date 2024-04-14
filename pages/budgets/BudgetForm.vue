@@ -120,9 +120,9 @@ const onSubmit = async () => {
         text: "Something went wrong.",
       });
     }
+  } finally {
+    loader.value = false;
   }
-
-  loader.value = false;
 };
 </script>
 

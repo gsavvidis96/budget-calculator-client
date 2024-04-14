@@ -113,8 +113,6 @@ const login = async (method: "google" | "github") => {
 
     await signInWithCustomToken(auth, customToken); // re-login with customToken
 
-    loader.value = null; // close loader
-
     router.replace({
       path: (route.query?.redirect as string) || "/budgets",
     }); // navigate away
@@ -133,7 +131,7 @@ const login = async (method: "google" | "github") => {
       text: "Something went wrong",
       color: "error",
     }); // open snackbar
-
+  } finally {
     loader.value = null; // close loader
   }
 };

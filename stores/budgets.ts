@@ -19,7 +19,7 @@ export interface BudgetsResponse {
   total_count: number;
 }
 
-export const useBudgetStore = defineStore("budget", () => {
+export const useBudgetStore = defineStore("budgets", () => {
   const {
     public: { apiUrl },
   } = useRuntimeConfig();
