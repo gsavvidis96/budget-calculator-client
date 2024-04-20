@@ -57,5 +57,12 @@ export const useBudgetStore = defineStore("budgets", () => {
     }
   };
 
-  return { sort, search, budgetsResponse, budgetsLoader, fetchBudgets };
+  return {
+    sort,
+    search,
+    budgetsResponse,
+    budgetsLoader,
+    budgetsFetched,
+    fetchBudgets,
+  };
 });

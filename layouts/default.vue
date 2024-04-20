@@ -94,6 +94,10 @@ html {
   }
 }
 
+.flex-1 {
+  flex: 1;
+}
+
 // GLOBAL STYLES
 .page-wrapper {
   display: flex;

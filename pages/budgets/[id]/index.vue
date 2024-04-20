@@ -4,10 +4,10 @@
       <v-progress-linear
         color="primary"
         indeterminate
-        v-if="loader"
+        v-if="currentBudgetLoader"
       ></v-progress-linear>
 
-      <template v-else>
+      <template v-if="currentBudget">
         <v-btn
           size="x-small"
           variant="text"
@@ -18,10 +18,10 @@
         >
 
         <div class="d-flex flex-column flex-grow-1 ga-8">
-          <budget-info :budget="currentBudget!" />
+          <budget-info />
 
           <div class="d-flex flex-column flex-md-row ga-12">
-            <div class="d-flex flex-column flex-1-0 ga-6">
+            <div class="d-flex flex-column flex-1 ga-6">
               <div class="d-flex justify-center align-center ga-2">
                 <div class="text-h6 text-primary">Income</div>
 
@@ -31,18 +31,16 @@
                   icon="mdi-playlist-plus"
                   variant="elevated"
                   color="primary"
+                  @click="dialog = { open: true, type: 'INCOME' }"
                 />
               </div>
 
               <div class="d-flex flex-column">
-                <budget-item-list
-                  type="INCOME"
-                  :items="currentBudget!.income_items"
-                />
+                <budget-item-list type="INCOME" />
               </div>
             </div>
 
-            <div class="d-flex flex-column flex-1-0 ga-6">
+            <div class="d-flex flex-column flex-1 ga-6">
               <div class="d-flex justify-center align-center ga-2">
                 <div class="text-h6 text-error">Expenses</div>
 
@@ -52,14 +50,12 @@
                   icon="mdi-playlist-plus"
                   variant="elevated"
                   color="error"
+                  @click="dialog = { open: true, type: 'EXPENSES' }"
                 />
               </div>
 
               <div class="d-flex flex-column">
-                <budget-item-list
-                  type="EXPENSES"
-                  :items="currentBudget!.expense_items"
-                />
+                <budget-item-list type="EXPENSES" />
               </div>
             </div>
           </div>
@@ -67,69 +63,69 @@
       </template>
     </div>
   </div>
+
+  <v-dialog v-model="dialog.open" :fullscreen="xs">
+    <div class="dialog-card align-self-center pa-5">
+      <v-btn
+        icon="mdi-close"
+        class="ml-auto mb-1"
+        density="comfortable"
+        variant="text"
+        @click="dialog.open = false"
+        v-if="xs"
+      />
+
+      <budget-item-form
+        :type="dialog.type!"
+        :budget-id="(params.id as string)"
+        @closeDialog="dialog.open = false"
+      />
+    </div>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
-import { getJwt } from "~/helpers/getJwt";
 import BudgetInfo from "./BudgetInfo.vue";
 import BudgetItemList from "./BudgetItemList.vue";
+import BudgetItemForm from "./BudgetItemForm.vue";
+import { useDisplay } from "vuetify";
 
 definePageMeta({
   middleware: "requires-auth",
 });
 
-export interface BudgetItem {
-  id: string;
-  type: "INCOME" | "EXPENSES";
-  description: string;
-  value: number;
-  created_at: string;
-  updated_at: string;
-  budget_id: string;
-}
-
-export interface Budget {
-  id: string;
-  title: string;
-  is_pinned: boolean;
-  balance: number;
-  total_income: number;
-  total_expenses: number;
-  expense_items: BudgetItem[];
-  income_items: BudgetItem[];
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-}
-
-const {
-  public: { apiUrl },
-} = useRuntimeConfig();
 const { params } = useRoute();
+const { xs } = useDisplay();
 
-const loader = ref(true);
-const currentBudget = ref<Budget | null>(null);
+const currentBudgetStore = useCurrentBudgetStore();
+
+const { fetchCurrentBudget } = currentBudgetStore;
+
+const { currentBudgetLoader, currentBudget } = storeToRefs(currentBudgetStore);
+
+const dialog = ref<{
+  open: boolean;
+  type: "INCOME" | "EXPENSES" | null;
+}>({
+  open: false,
+  type: null,
+});
 
 const onFetchCurrentBudget = async () => {
   try {
     const { id } = params;
 
-    const budget = await $fetch<Budget>(`${apiUrl}/budgets/${id}`, {
-      headers: {
-        Authorization: `Bearer ${await getJwt()}`,
-      },
-      parseResponse: (r) => JSON.parse(r),
-    });
-
-    currentBudget.value = budget;
+    await fetchCurrentBudget(id as string);
   } catch (e) {
     navigateTo("/budgets");
-  } finally {
-    loader.value = false;
   }
 };
 
 onFetchCurrentBudget();
+
+onUnmounted(() => {
+  currentBudget.value = null;
+});
 </script>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

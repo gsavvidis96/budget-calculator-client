@@ -10,20 +10,27 @@
       variant="tonal"
       density="comfortable"
       :color="type === 'INCOME' ? 'primary' : 'error'"
-      v-if="items.length === 0"
+      v-if="budgetItems.length === 0"
     ></v-alert>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { BudgetItem } from "./index.vue";
-
 const props = defineProps<{
   type: "INCOME" | "EXPENSES";
-  items: BudgetItem[];
 }>();
 
-const { type, items } = toRefs(props);
+const { type } = toRefs(props);
+
+const currentBudgetStore = useCurrentBudgetStore();
+
+const { currentBudget } = storeToRefs(currentBudgetStore);
+
+const budgetItems = computed(() =>
+  type.value === "INCOME"
+    ? currentBudget.value!.income_items
+    : currentBudget.value!.expense_items
+);
 </script>
 
 <style scoped></style>
