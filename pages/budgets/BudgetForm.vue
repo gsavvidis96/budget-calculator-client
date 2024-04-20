@@ -1,5 +1,9 @@
 <template>
-  <form class="d-flex flex-column ga-4 flex-grow-1" @submit.prevent="onSubmit">
+  <form
+    class="d-flex flex-column ga-4 flex-grow-1"
+    @submit.prevent="onSubmit"
+    novalidate
+  >
     <div class="text-h6 text-center align-self-center">
       {{ Boolean(budget) ? "Edit" : "Add new" }} budget
     </div>
@@ -25,9 +29,9 @@
     ></v-checkbox-btn>
 
     <v-btn
-      :color="!hasChanges ? 'gray' : 'primary'"
+      :color="disabled ? 'gray' : 'primary'"
       class="text-center mt-auto"
-      :disabled="!hasChanges"
+      :disabled="disabled"
       type="submit"
       :loading="loader"
       >{{ Boolean(budget) ? "Save" : "Add" }}</v-btn
@@ -75,14 +79,14 @@ const hasChanges = computed(
     })
 );
 
+const disabled = computed(() => !hasChanges.value || !title.value);
+
 const onSubmit = async () => {
   error.value = false;
   loader.value = true;
 
   try {
-    const jwt = await getJwt();
-
-    await $fetch<BudgetListItem>(
+    await $fetch(
       `${apiUrl}/budgets${budget.value ? "/" + budget.value.id : ""}`,
       {
         method: budget.value ? "patch" : "post",
@@ -91,7 +95,7 @@ const onSubmit = async () => {
           is_pinned: is_pinned.value,
         },
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          Authorization: `Bearer ${await getJwt()}`,
         },
         parseResponse: (r) => JSON.parse(r),
       }
@@ -109,7 +113,7 @@ const onSubmit = async () => {
 
     emit("closeDialog");
   } catch (e: any) {
-    if (e?.status === 400 && e?.response?._data.field?.includes("title")) {
+    if (e?.status === 400 && e?.response?._data?.field?.includes("title")) {
       error.value = true;
     } else {
       console.error(e);

@@ -151,8 +151,6 @@ const onTogglePin = async () => {
   loader.value = true;
 
   try {
-    const jwt = await getJwt();
-
     const { title, is_pinned } = await $fetch<BudgetListItem>(
       `${apiUrl}/budgets/${budget.value.id}`,
       {
@@ -161,7 +159,7 @@ const onTogglePin = async () => {
           is_pinned: !budget.value.is_pinned,
         },
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          Authorization: `Bearer ${await getJwt()}`,
         },
         parseResponse: (r) => JSON.parse(r),
       }
@@ -191,12 +189,10 @@ const onDelete = async () => {
   deleteLoader.value = true;
 
   try {
-    const jwt = await getJwt();
-
-    await $fetch<BudgetListItem>(`${apiUrl}/budgets/${budget.value.id}`, {
+    await $fetch(`${apiUrl}/budgets/${budget.value.id}`, {
       method: "delete",
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${await getJwt()}`,
       },
       parseResponse: (r) => JSON.parse(r),
     });

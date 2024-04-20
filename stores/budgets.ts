@@ -50,8 +50,6 @@ export const useBudgetStore = defineStore("budgets", () => {
       budgetsResponse.value = response;
 
       budgetsFetched.value = true;
-
-      return response;
     } catch (e) {
       throw e;
     } finally {
