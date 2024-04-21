@@ -87,10 +87,15 @@ html {
   }
 }
 
-.v-dialog {
+.v-dialog:not(.v-dialog--fullscreen) {
   .v-overlay__scrim {
     background-color: rgba(0, 0, 0, 0.5);
     opacity: 1;
+  }
+
+  .v-overlay__content {
+    margin: 20px;
+    width: calc(100% - 40px);
   }
 }
 
@@ -116,12 +121,13 @@ html {
 }
 
 .dialog-card {
-  width: 600px;
+  width: 100%;
   background-color: rgb(var(--v-theme-background3));
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  padding: 20px;
 
   @media only screen and (max-width: 648px) {
     width: 100%;

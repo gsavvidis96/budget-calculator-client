@@ -80,8 +80,8 @@
     </div>
   </div>
 
-  <v-dialog v-model="dialog" :fullscreen="xs">
-    <div class="dialog-card align-self-center pa-5">
+  <v-dialog v-model="dialog" :fullscreen="xs" maxWidth="600">
+    <div class="dialog-card">
       <v-btn
         icon="mdi-close"
         class="ml-auto mb-1"
@@ -160,7 +160,7 @@ definePageMeta({
   middleware: "requires-auth",
 });
 
-const budgetStore = useBudgetStore();
+const budgetStore = useBudgetsStore();
 
 const { fetchBudgets } = budgetStore;
 

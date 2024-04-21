@@ -55,7 +55,7 @@ const emit = defineEmits(["closeDialog"]);
 
 const { openSnackbar } = useBaseStore();
 
-const { fetchBudgets } = useBudgetStore();
+const { fetchBudgets } = useBudgetsStore();
 
 const { budget } = toRefs(props);
 

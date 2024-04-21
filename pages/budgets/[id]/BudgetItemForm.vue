@@ -66,7 +66,7 @@ const { type, budgetItem, budgetId } = toRefs(props);
 
 const emit = defineEmits(["closeDialog"]);
 
-const budgetStore = useBudgetStore();
+const budgetStore = useBudgetsStore();
 
 const { budgetsFetched } = storeToRefs(budgetStore);
 

@@ -32,8 +32,8 @@
     </template>
   </template>
 
-  <v-dialog v-model="dialog">
-    <div class="dialog-card align-self-center pa-5 rounded">
+  <v-dialog v-model="dialog" maxWidth="600">
+    <div class="dialog-card">
       <LogoutConfirmation @closeDialog="dialog = false" />
     </div>
   </v-dialog>
@@ -47,6 +47,8 @@ import { useCurrentUser } from "@/helpers/useCurrentUser";
 const isCurrentUserLoaded = useIsCurrentUserLoaded();
 const user = useCurrentUser();
 const { closeDrawer } = useBaseStore();
+const { clearBudgetsState } = useBudgetsStore();
+
 const route = useRoute();
 
 const dialog = ref(false);
@@ -56,6 +58,10 @@ const openLogoutDialog = () => {
 
   dialog.value = true;
 };
+
+watch(user, (newUser, oldUser) => {
+  if (!newUser && oldUser) clearBudgetsState();
+});
 </script>
 
 <style scoped lang="scss"></style>

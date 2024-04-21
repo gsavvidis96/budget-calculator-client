@@ -19,7 +19,7 @@ export interface BudgetsResponse {
   total_count: number;
 }
 
-export const useBudgetStore = defineStore("budgets", () => {
+export const useBudgetsStore = defineStore("budgets", () => {
   const {
     public: { apiUrl },
   } = useRuntimeConfig();
@@ -57,6 +57,14 @@ export const useBudgetStore = defineStore("budgets", () => {
     }
   };
 
+  const clearBudgetsState = () => {
+    sort.value = DEFAULT_SORTBY;
+    search.value = "";
+    budgetsResponse.value = null;
+    budgetsFetched.value = false;
+    budgetsLoader.value = false;
+  };
+
   return {
     sort,
     search,
@@ -64,5 +72,6 @@ export const useBudgetStore = defineStore("budgets", () => {
     budgetsLoader,
     budgetsFetched,
     fetchBudgets,
+    clearBudgetsState,
   };
 });

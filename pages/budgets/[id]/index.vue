@@ -64,8 +64,8 @@
     </div>
   </div>
 
-  <v-dialog v-model="dialog.open" :fullscreen="xs">
-    <div class="dialog-card align-self-center pa-5">
+  <v-dialog v-model="dialog.open" :fullscreen="xs" maxWidth="600">
+    <div class="dialog-card">
       <v-btn
         icon="mdi-close"
         class="ml-auto mb-1"

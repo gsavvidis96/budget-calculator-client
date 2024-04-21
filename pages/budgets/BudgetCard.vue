@@ -102,8 +102,8 @@
     </div>
   </v-menu>
 
-  <v-dialog v-model="dialog" :fullscreen="xs">
-    <div class="dialog-card align-self-center pa-5">
+  <v-dialog v-model="dialog" :fullscreen="xs" maxWidth="600">
+    <div class="dialog-card">
       <v-btn
         icon="mdi-close"
         class="ml-auto mb-1"
@@ -138,7 +138,7 @@ const { openSnackbar } = useBaseStore();
 
 const { budget } = toRefs(props);
 
-const { fetchBudgets } = useBudgetStore();
+const { fetchBudgets } = useBudgetsStore();
 
 const trimmedTitle = useTrimmedText(toRef(budget.value.title), 20);
 
