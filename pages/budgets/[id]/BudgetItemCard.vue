@@ -59,8 +59,6 @@ const { budgetItem } = toRefs(props);
 const currentBudgetStore = useCurrentBudgetStore();
 
 const { currentBudget } = storeToRefs(currentBudgetStore);
-
-console.log(JSON.parse(JSON.stringify(budgetItem.value)));
 </script>
 
 <style scoped lang="scss">
