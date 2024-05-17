@@ -20,7 +20,7 @@
 
         <div>
           {{ budgetItem.type === "INCOME" ? "+" : "-" }}
-          {{ budgetItem.value.toFixed(2) }}€
+          {{ value }}€
         </div>
 
         <v-btn
@@ -50,6 +50,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatCurrency } from "~/helpers/formatCurrency";
+
 const props = defineProps<{
   budgetItem: BudgetItem;
 }>();
@@ -59,6 +61,8 @@ const { budgetItem } = toRefs(props);
 const currentBudgetStore = useCurrentBudgetStore();
 
 const { currentBudget } = storeToRefs(currentBudgetStore);
+
+const value = computed(() => formatCurrency(budgetItem.value.value));
 </script>
 
 <style scoped lang="scss">

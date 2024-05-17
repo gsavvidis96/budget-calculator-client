@@ -19,9 +19,7 @@
       <div class="d-flex align-center ga-2">
         <div class="text-body-2 font-weight-medium">Balance:</div>
 
-        <div class="text-body-2 text-medium-emphasis">
-          {{ budget.balance.toFixed(2) }}€
-        </div>
+        <div class="text-body-2 text-medium-emphasis">{{ balance }}€</div>
       </div>
     </div>
 
@@ -123,6 +121,7 @@ import { useDisplay } from "vuetify";
 import { getJwt } from "~/helpers/getJwt";
 import BudgetForm from "./BudgetForm.vue";
 import { useTrimmedText } from "@/helpers/useTrimmedText";
+import { formatCurrency } from "@/helpers/formatCurrency";
 
 const { xs } = useDisplay();
 
@@ -141,6 +140,7 @@ const { budget } = toRefs(props);
 const { fetchBudgets } = useBudgetsStore();
 
 const trimmedTitle = useTrimmedText(toRef(budget.value.title), 20);
+const balance = computed(() => formatCurrency(budget.value.balance));
 
 const loader = ref(false);
 const deleteMenu = ref(false);

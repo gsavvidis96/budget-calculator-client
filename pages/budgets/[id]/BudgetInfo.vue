@@ -4,14 +4,12 @@
   >
     <div class="text-body-1">{{ currentBudget!.title }}</div>
 
-    <div class="text-h4">{{ currentBudget!.balance }}€</div>
+    <div class="text-h4">{{ balance }}€</div>
 
     <div class="d-flex pa-2 rounded align-center bg-primary category">
       <div class="text-subtitle-2 mr-auto">INCOME</div>
 
-      <div class="text-subtitle-2">
-        + {{ currentBudget!.total_income.toFixed(2) }}€
-      </div>
+      <div class="text-subtitle-2">+ {{ totalIncome }}€</div>
     </div>
 
     <div class="d-flex pa-2 rounded align-center bg-error category">
@@ -22,18 +20,26 @@
           {{ currentBudget!.expenses_percentage.toFixed(2) }}%
         </v-chip>
 
-        <div class="text-subtitle-2">
-          - {{ currentBudget!.total_expenses.toFixed(2) }}€
-        </div>
+        <div class="text-subtitle-2">- {{ totalExpenses }}€</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { formatCurrency } from "~/helpers/formatCurrency";
+
 const currentBudgetStore = useCurrentBudgetStore();
 
 const { currentBudget } = storeToRefs(currentBudgetStore);
+
+const balance = computed(() => formatCurrency(currentBudget.value!.balance));
+const totalIncome = computed(() =>
+  formatCurrency(currentBudget.value!.total_income)
+);
+const totalExpenses = computed(() =>
+  formatCurrency(currentBudget.value!.total_expenses)
+);
 </script>
 
 <style scoped lang="scss">
