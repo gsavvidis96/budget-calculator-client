@@ -26,8 +26,8 @@
             id="sortby-menu"
           >
             <template v-slot:default v-if="!xs"> Sort by </template>
-          </v-btn></v-badge
-        >
+          </v-btn>
+        </v-badge>
 
         <v-btn
           :icon="xs ? 'mdi-plus' : undefined"

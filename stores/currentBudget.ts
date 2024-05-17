@@ -5,6 +5,7 @@ export interface BudgetItem {
   type: "INCOME" | "EXPENSES";
   description: string;
   value: number;
+  expense_percentage?: number;
   created_at: string;
   updated_at: string;
   budget_id: string;
@@ -15,6 +16,7 @@ export interface Budget {
   title: string;
   is_pinned: boolean;
   balance: number;
+  expenses_percentage: number;
   total_income: number;
   total_expenses: number;
   expense_items: BudgetItem[];

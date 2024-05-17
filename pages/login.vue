@@ -75,7 +75,7 @@ const {
   public: { apiUrl },
 } = useRuntimeConfig();
 
-const emailExistsError = ref<any>(false);
+const emailExistsError = ref(false);
 const loader = ref<null | "google" | "github">(null);
 
 const login = async (method: "google" | "github") => {

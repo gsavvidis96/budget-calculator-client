@@ -1,21 +1,25 @@
 <template>
-  <div>
-    <v-alert
-      :text="
-        type === 'INCOME'
-          ? 'You have no income yet'
-          : 'You have no expenses yet'
-      "
-      type="info"
-      variant="tonal"
-      density="comfortable"
-      :color="type === 'INCOME' ? 'primary' : 'error'"
-      v-if="budgetItems.length === 0"
-    ></v-alert>
-  </div>
+  <v-alert
+    :text="
+      type === 'INCOME' ? 'You have no income yet' : 'You have no expenses yet'
+    "
+    type="info"
+    variant="tonal"
+    density="comfortable"
+    :color="type === 'INCOME' ? 'primary' : 'error'"
+    v-if="budgetItems.length === 0"
+  ></v-alert>
+
+  <BudgetItemCard
+    v-for="budgetItem in budgetItems"
+    :budget-item="budgetItem"
+    :key="budgetItem.id"
+  />
 </template>
 
 <script setup lang="ts">
+import BudgetItemCard from "./BudgetItemCard.vue";
+
 const props = defineProps<{
   type: "INCOME" | "EXPENSES";
 }>();

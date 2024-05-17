@@ -17,8 +17,14 @@
     <div class="d-flex pa-2 rounded align-center bg-error category">
       <div class="text-subtitle-2 mr-auto">EXPENSES</div>
 
-      <div class="text-subtitle-2">
-        - {{ currentBudget!.total_expenses.toFixed(2) }}€
+      <div class="d-flex align-center ga-2">
+        <v-chip size="small" v-if="currentBudget!.income_items.length">
+          {{ currentBudget!.expenses_percentage.toFixed(2) }}%
+        </v-chip>
+
+        <div class="text-subtitle-2">
+          - {{ currentBudget!.total_expenses.toFixed(2) }}€
+        </div>
       </div>
     </div>
   </div>
