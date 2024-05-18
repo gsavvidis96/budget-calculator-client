@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import { getJwt } from "~/helpers/getJwt";
+import { useTrimmedText } from "~/helpers/useTrimmedText";
 
 const {
   public: { apiUrl },
@@ -83,6 +84,8 @@ const initialValues = ref({
   description: description.value,
   value: value.value,
 });
+
+const trimmedDescription = useTrimmedText(description, 20);
 
 const hasChanges = computed(
   () =>
@@ -128,9 +131,9 @@ const onSubmit = async () => {
     openSnackbar({
       open: true,
       color: "success",
-      text: `${type.value === "INCOME" ? "Income" : "Expense"} was ${
-        Boolean(budgetItem.value) ? "updated" : "added"
-      }.`,
+      text: `${type.value === "INCOME" ? "Income" : "Expense"} "${
+        trimmedDescription.value
+      }" was ${Boolean(budgetItem.value) ? "updated" : "added"}.`,
     });
 
     emit("closeDialog");

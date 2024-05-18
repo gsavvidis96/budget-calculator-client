@@ -62,9 +62,15 @@
       <div class="text-subtitle-1 text-center">
         Are you sure you want to delete
         {{ budgetItem.type === "EXPENSES" ? "expense" : "income" }} "<strong>{{
-          budgetItem.description
+          trimmedDescription
         }}</strong
-        >" ?
+        >" (<span
+          class="text-body-2"
+          :class="
+            budgetItem.type === 'EXPENSES' ? 'text-error' : 'text-primary'
+          "
+          >{{ budgetItem.type === "EXPENSES" ? "-" : "+" }}{{ value }}€</span
+        >) ?
       </div>
 
       <div class="d-flex align-center justify-center ga-2">
@@ -109,6 +115,7 @@ import { formatCurrency } from "~/helpers/formatCurrency";
 import { useDisplay } from "vuetify";
 import BudgetItemForm from "./BudgetItemForm.vue";
 import { getJwt } from "~/helpers/getJwt";
+import { useTrimmedText } from "~/helpers/useTrimmedText";
 
 const props = defineProps<{
   budgetItem: BudgetItem;
@@ -132,6 +139,10 @@ const { fetchCurrentBudget } = currentBudgetStore;
 const { currentBudget } = storeToRefs(currentBudgetStore);
 
 const value = computed(() => formatCurrency(budgetItem.value.value));
+const trimmedDescription = useTrimmedText(
+  toRef(budgetItem.value.description),
+  20
+);
 
 const dialog = ref(false);
 const deleteMenu = ref(false);
@@ -162,7 +173,7 @@ const onDelete = async () => {
       open: true,
       color: "warning",
       text: `${budgetItem.value.type === "EXPENSES" ? "Expense" : "Income"} "${
-        budgetItem.value.description
+        trimmedDescription.value
       }" was deleted.`,
     });
 
