@@ -2,8 +2,8 @@
   <div class="d-flex flex-column">
     <v-divider />
 
-    <div class="d-flex align-center text-body-1 px-2 py-3 card-content">
-      <div class="mr-auto">
+    <div class="d-flex align-center text-body-1 px-2 py-3 card-content ga-2">
+      <div class="mr-auto text-capitalize card-title">
         {{ budgetItem.description }}
       </div>
 
@@ -18,10 +18,7 @@
           {{ budgetItem.expense_percentage!.toFixed(2) }}%
         </v-chip>
 
-        <div>
-          {{ budgetItem.type === "INCOME" ? "+" : "-" }}
-          {{ value }}€
-        </div>
+        <div>{{ budgetItem.type === "INCOME" ? "+" : "-" }}{{ value }}€</div>
 
         <v-btn
           density="compact"
@@ -199,6 +196,11 @@ const onDelete = async () => {
   &:hover {
     background-color: rgb(var(--v-theme-background3));
   }
+}
+
+.card-title {
+  white-space: nowrap;
+  overflow-x: auto;
 }
 
 .delete-menu {

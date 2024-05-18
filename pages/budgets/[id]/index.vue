@@ -21,7 +21,10 @@
           <budget-info />
 
           <div class="d-flex flex-column flex-md-row ga-12">
-            <div class="d-flex flex-column flex-1 ga-6">
+            <div
+              class="d-flex flex-column flex-1 ga-6"
+              :class="{ 'overflow-x-hidden': mdAndUp }"
+            >
               <div class="d-flex justify-center align-center ga-2">
                 <div class="text-h6 text-primary">Income</div>
 
@@ -40,7 +43,10 @@
               </div>
             </div>
 
-            <div class="d-flex flex-column flex-1 ga-6">
+            <div
+              class="d-flex flex-column flex-1 ga-6"
+              :class="{ 'overflow-x-hidden': mdAndUp }"
+            >
               <div class="d-flex justify-center align-center ga-2">
                 <div class="text-h6 text-error">Expenses</div>
 
@@ -95,7 +101,7 @@ definePageMeta({
 });
 
 const { params } = useRoute();
-const { xs } = useDisplay();
+const { xs, mdAndUp } = useDisplay();
 
 const currentBudgetStore = useCurrentBudgetStore();
 
