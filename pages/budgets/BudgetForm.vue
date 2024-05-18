@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getJwt } from "~/helpers/getJwt";
 import { trimText } from "~/helpers/trimText";
 
@@ -68,7 +69,9 @@ const initialValues = ref({
 const loader = ref(false);
 const error = ref(false);
 
-const trimmedTitle = computed(() => trimText(title.value, 20));
+const trimmedTitle = computed(() =>
+  trimText(capitalizeFirstLetter(title.value), 20)
+);
 
 const hasChanges = computed(
   () =>

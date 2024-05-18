@@ -3,7 +3,7 @@
     <v-divider />
 
     <div class="d-flex align-center text-body-1 px-2 py-3 card-content ga-2">
-      <div class="mr-auto text-capitalize card-title">
+      <div class="mr-auto card-title capitalize-first-letter">
         {{ budgetItem.description }}
       </div>
 
@@ -113,6 +113,7 @@ import { useDisplay } from "vuetify";
 import BudgetItemForm from "./BudgetItemForm.vue";
 import { getJwt } from "~/helpers/getJwt";
 import { trimText } from "~/helpers/trimText";
+import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 
 const props = defineProps<{
   budgetItem: BudgetItem;
@@ -137,7 +138,7 @@ const { currentBudget } = storeToRefs(currentBudgetStore);
 
 const value = computed(() => formatCurrency(budgetItem.value.value));
 const trimmedDescription = computed(() =>
-  trimText(budgetItem.value.description, 20)
+  trimText(capitalizeFirstLetter(budgetItem.value.description), 20)
 );
 
 const dialog = ref(false);

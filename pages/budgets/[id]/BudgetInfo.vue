@@ -2,7 +2,9 @@
   <div
     class="pa-6 budget-info rounded d-flex flex-column align-center text-center ga-2"
   >
-    <div class="text-body-1 text-capitalize">{{ currentBudget!.title }}</div>
+    <div class="text-body-1 capitalize-first-letter">
+      {{ currentBudget!.title }}
+    </div>
 
     <div class="text-h4">{{ balance }}€</div>
 

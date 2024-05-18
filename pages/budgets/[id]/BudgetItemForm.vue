@@ -51,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 import { getJwt } from "~/helpers/getJwt";
 import { trimText } from "~/helpers/trimText";
 
@@ -85,7 +86,9 @@ const initialValues = ref({
   value: value.value,
 });
 
-const trimmedDescription = computed(() => trimText(description.value, 20));
+const trimmedDescription = computed(() =>
+  trimText(capitalizeFirstLetter(description.value), 20)
+);
 
 const hasChanges = computed(
   () =>

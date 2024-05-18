@@ -4,7 +4,7 @@
     class="d-flex budget-card rounded pa-4 pa-sm-6 ga-2"
   >
     <div class="d-flex flex-column ga-2 flex-grow-1 budget-info">
-      <div class="text-h5 font-weight-bold budget-title">
+      <div class="text-h5 font-weight-bold capitalize-first-letter">
         {{ budget.title }}
       </div>
 
@@ -122,6 +122,7 @@ import { getJwt } from "~/helpers/getJwt";
 import BudgetForm from "./BudgetForm.vue";
 import { trimText } from "~/helpers/trimText";
 import { formatCurrency } from "@/helpers/formatCurrency";
+import { capitalizeFirstLetter } from "~/helpers/capitalizeFirstLetter";
 
 const { xs } = useDisplay();
 
@@ -139,7 +140,9 @@ const { budget } = toRefs(props);
 
 const { fetchBudgets } = useBudgetsStore();
 
-const trimmedTitle = computed(() => trimText(budget.value.title, 20));
+const trimmedTitle = computed(() =>
+  trimText(capitalizeFirstLetter(budget.value.title), 20)
+);
 const balance = computed(() => formatCurrency(budget.value.balance));
 
 const loader = ref(false);
@@ -151,7 +154,7 @@ const onTogglePin = async () => {
   loader.value = true;
 
   try {
-    const { title, is_pinned } = await $fetch<BudgetListItem>(
+    const { is_pinned } = await $fetch<BudgetListItem>(
       `${apiUrl}/budgets/${budget.value.id}`,
       {
         method: "patch",
@@ -170,7 +173,9 @@ const onTogglePin = async () => {
     openSnackbar({
       open: true,
       color: is_pinned ? "success" : "warning",
-      text: `Budget "${title}" was ${is_pinned ? "pinned" : "unpinned"}`,
+      text: `Budget "${trimmedTitle.value}" was ${
+        is_pinned ? "pinned" : "unpinned"
+      }`,
     });
   } catch (e) {
     console.error(e);
@@ -220,7 +225,7 @@ const onDelete = async () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .budget-card {
   cursor: pointer;
   border: 1px solid rgb(var(--v-theme-border));
@@ -237,10 +242,6 @@ const onDelete = async () => {
 .budget-info {
   overflow-x: auto;
   white-space: nowrap;
-}
-
-.budget-title::first-letter {
-  text-transform: uppercase;
 }
 
 .delete-menu {

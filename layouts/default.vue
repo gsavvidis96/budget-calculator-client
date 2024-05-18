@@ -137,4 +137,8 @@ html {
     border-radius: 0px;
   }
 }
+
+.capitalize-first-letter::first-letter {
+  text-transform: uppercase;
+}
 </style>
