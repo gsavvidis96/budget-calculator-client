@@ -5,7 +5,8 @@
     novalidate
   >
     <div class="text-h6 align-self-center text-center">
-      {{ type === "INCOME" ? "Add Income" : "Add Expense" }}
+      {{ Boolean(budgetItem) ? "Edit" : "Add" }}
+      {{ type === "INCOME" ? "Income" : "Expense" }}
     </div>
 
     <v-text-field
