@@ -4,7 +4,7 @@
     class="d-flex budget-card rounded pa-4 pa-sm-6 ga-2"
   >
     <div class="d-flex flex-column ga-2 flex-grow-1 budget-info">
-      <div class="text-h5 font-weight-bold text-capitalize">
+      <div class="text-h5 font-weight-bold budget-title">
         {{ budget.title }}
       </div>
 
@@ -120,7 +120,7 @@
 import { useDisplay } from "vuetify";
 import { getJwt } from "~/helpers/getJwt";
 import BudgetForm from "./BudgetForm.vue";
-import { useTrimmedText } from "@/helpers/useTrimmedText";
+import { trimText } from "~/helpers/trimText";
 import { formatCurrency } from "@/helpers/formatCurrency";
 
 const { xs } = useDisplay();
@@ -139,7 +139,7 @@ const { budget } = toRefs(props);
 
 const { fetchBudgets } = useBudgetsStore();
 
-const trimmedTitle = useTrimmedText(toRef(budget.value.title), 20);
+const trimmedTitle = computed(() => trimText(budget.value.title, 20));
 const balance = computed(() => formatCurrency(budget.value.balance));
 
 const loader = ref(false);
@@ -237,6 +237,10 @@ const onDelete = async () => {
 .budget-info {
   overflow-x: auto;
   white-space: nowrap;
+}
+
+.budget-title::first-letter {
+  text-transform: uppercase;
 }
 
 .delete-menu {

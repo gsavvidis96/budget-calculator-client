@@ -112,7 +112,7 @@ import { formatCurrency } from "~/helpers/formatCurrency";
 import { useDisplay } from "vuetify";
 import BudgetItemForm from "./BudgetItemForm.vue";
 import { getJwt } from "~/helpers/getJwt";
-import { useTrimmedText } from "~/helpers/useTrimmedText";
+import { trimText } from "~/helpers/trimText";
 
 const props = defineProps<{
   budgetItem: BudgetItem;
@@ -136,9 +136,8 @@ const { fetchCurrentBudget } = currentBudgetStore;
 const { currentBudget } = storeToRefs(currentBudgetStore);
 
 const value = computed(() => formatCurrency(budgetItem.value.value));
-const trimmedDescription = useTrimmedText(
-  toRef(budgetItem.value.description),
-  20
+const trimmedDescription = computed(() =>
+  trimText(budgetItem.value.description, 20)
 );
 
 const dialog = ref(false);

@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { getJwt } from "~/helpers/getJwt";
-import { useTrimmedText } from "~/helpers/useTrimmedText";
+import { trimText } from "~/helpers/trimText";
 
 const {
   public: { apiUrl },
@@ -68,7 +68,7 @@ const initialValues = ref({
 const loader = ref(false);
 const error = ref(false);
 
-const trimmedTitle = useTrimmedText(title, 20);
+const trimmedTitle = computed(() => trimText(title.value, 20));
 
 const hasChanges = computed(
   () =>
