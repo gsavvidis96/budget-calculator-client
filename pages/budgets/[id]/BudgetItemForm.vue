@@ -36,6 +36,7 @@
       v-model.number="value"
       type="number"
       min="0"
+      max="99999999.99"
       @focus="$event.target.select()"
     />
 
@@ -142,7 +143,7 @@ const onSubmit = async () => {
     emit("closeDialog");
   } catch (e: any) {
     if (
-      e.status === 400 ||
+      e.status === 400 &&
       e?.response._data?.field?.includes("budget_id, type, description")
     ) {
       error.value = true;
@@ -161,9 +162,9 @@ const onSubmit = async () => {
 };
 
 watch(value, (newValue) => {
-  if (!Boolean(newValue) || newValue <= 0) {
-    value.value = 0;
-  }
+  if (!Boolean(newValue) || newValue <= 0) value.value = 0;
+
+  if (newValue > 99999999.99) value.value = 99999999.99;
 });
 </script>
 
