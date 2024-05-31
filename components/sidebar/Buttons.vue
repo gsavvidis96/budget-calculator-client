@@ -1,5 +1,13 @@
 <template>
   <template v-if="isCurrentUserLoaded">
+    <v-list-item color="primary" to="/" @click="closeDrawer">
+      <template v-slot:prepend>
+        <v-icon size="24px">mdi-information-outline</v-icon>
+      </template>
+
+      <v-list-item-title>About the project</v-list-item-title>
+    </v-list-item>
+
     <v-list-item color="primary" to="/login" @click="closeDrawer" v-if="!user">
       <template v-slot:prepend>
         <v-icon size="24px">mdi-login</v-icon>
