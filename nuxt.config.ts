@@ -10,6 +10,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: "",
+      firebaseApiKey: "",
+      firebaseAuthDomain: "",
     },
   },
   devtools: { enabled: true },
