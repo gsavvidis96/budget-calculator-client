@@ -12,12 +12,15 @@
         >
         for fun and showcasing purposes. The main technologies used include
         <span class="font-weight-bold">Typescript</span>,
-        <span class="font-weight-bold">Nuxt</span>,
-        <span class="font-weight-bold">Node</span>,
+        <span class="font-weight-bold">Nuxt.js</span>,
+        <span class="font-weight-bold">Node.js</span>,
         <span class="font-weight-bold">Neon Serverless Postgres</span>, and
         <span class="font-weight-bold">Serverless Framework</span>. It's split
         into two repos: one for the
-        <a href="https://github.com/gsavvidis96/budget-calculator-client" target="_blank" class="text-primary"
+        <a
+          href="https://github.com/gsavvidis96/budget-calculator-client"
+          target="_blank"
+          class="text-primary"
           >Client</a
         >
         and one for the
@@ -59,8 +62,8 @@
           <span class="font-weight-bold">AWS API Gateway</span>,
           <span class="font-weight-bold">AWS Lambda</span> and
           <span class="font-weight-bold">Typescript</span>, deployed using the
-          <span class="font-weight-bold">Serverless Framework</span>. It is connecting
-          to a
+          <span class="font-weight-bold">Serverless Framework</span>. It is
+          connecting to a
           <span class="font-weight-bold">Neon Serverless Postgres</span>
           database. API docs can be found
           <a

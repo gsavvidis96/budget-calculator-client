@@ -2,7 +2,7 @@
   <v-app>
     <navbar />
 
-    <v-navigation-drawer v-model="drawer" temporary location="right">
+    <v-navigation-drawer v-model="drawer" temporary location="right" touchless>
       <sidebar />
     </v-navigation-drawer>
     <slot />
