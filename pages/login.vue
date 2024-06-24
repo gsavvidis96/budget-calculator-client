@@ -56,7 +56,6 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
-  signInWithCustomToken,
   signOut,
 } from "firebase/auth";
 import GoogleIcon from "@/components/GoogleIcon.vue";
@@ -95,23 +94,23 @@ const login = async (method: "google" | "github") => {
         throw new Error("unsupported provider");
     } // create provider based on login method
 
-    const res = await signInWithPopup(auth, provider); // login with popup
+    const { user } = await signInWithPopup(auth, provider); // login with popup
 
     loader.value = method; // open loader
 
-    const idToken = await res.user.getIdToken(); // get idToken
+    const idToken = await user.getIdToken(); // get idToken
 
-    const { customToken } = await $fetch<{
-      customToken: string;
+    const { forceRefresh } = await $fetch<{
+      forceRefresh: boolean;
     }>(`${apiUrl}/auth/login`, {
       method: "POST",
       body: {
         idToken,
       },
       parseResponse: (r) => JSON.parse(r),
-    }); // get custom token using idToken
+    }); // call login to create a user entry if not created
 
-    await signInWithCustomToken(auth, customToken); // re-login with customToken
+    if (forceRefresh) await user.getIdToken(true);
 
     router.replace({
       path: (route.query?.redirect as string) || "/budgets",

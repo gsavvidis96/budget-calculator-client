@@ -12,18 +12,18 @@
     "@mdi/font": "^7.4.47",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "^0.5.1",
-    "@vueuse/nuxt": "^10.9.0",
+    "@vueuse/nuxt": "^10.11.0",
     "dayjs-nuxt": "^2.1.9",
     "firebase": "^10.8.0",
-    "nuxt": "^3.10.3",
+    "nuxt": "^3.12.2",
     "pinia": "^2.1.7",
-    "vue": "^3.4.19",
-    "vue-router": "^4.3.0",
+    "vue": "^3.4.30",
+    "vue-router": "^4.4.0",
     "vuefire": "^3.1.23",
-    "vuetify": "^3.5.6"
+    "vuetify": "^3.6.10"
   },
   "devDependencies": {
-    "sass": "^1.71.1",
+    "sass": "^1.77.6",
     "vite-plugin-vuetify": "^2.0.2"
   }
 }
