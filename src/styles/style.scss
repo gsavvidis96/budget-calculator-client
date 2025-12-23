@@ -1,0 +1,19 @@
+@use 'vuetify-overrides';
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.page-container {
+  max-width: 1400px !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+.flex-1 {
+  flex: 1;
+}

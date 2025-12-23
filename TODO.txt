@@ -1,0 +1,10 @@
+reusable error handling
+delete loaders ---> string array
+delete menu +/- symbols
+AI verification + testing
+setup on laptop
+update all packages
+
+add pagination & infinite scrolling
+add balance cap validator
+check proper aws keys management
