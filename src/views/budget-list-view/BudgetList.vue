@@ -14,7 +14,7 @@
         ></v-alert>
       </div>
 
-      <template v-if="budgets?.budgets.length">
+      <template v-if="budgets?.budgets.length && !budgetsLoader">
         <BudgetCard
           v-for="budget in budgets?.budgets"
           :budget="budget"

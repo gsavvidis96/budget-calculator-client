@@ -20,6 +20,8 @@ const dark: ThemeDefinition = {
 
 const isDark = useDark()
 
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+
 const vuetify = createVuetify({
   theme: {
     defaultTheme: isDark.value ? 'dark' : 'light',
@@ -31,6 +33,9 @@ const vuetify = createVuetify({
   defaults: {
     VBtn: {
       variant: 'flat',
+    },
+    VTooltip: {
+      disabled: isTouchDevice,
     },
   },
 })
