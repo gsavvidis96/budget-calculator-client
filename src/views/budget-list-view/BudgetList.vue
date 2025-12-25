@@ -43,14 +43,19 @@
         </div>
 
         <div class="d-flex align-center justify-center ga-2">
-          <v-btn variant="text" color="primary" size="small" @click="deleteMenu.open = false"
+          <v-btn
+            variant="text"
+            color="primary"
+            size="small"
+            @click="deleteMenu.open = false"
+            :disabled="deleteLoaders.has(deleteMenu.budget?.id ?? '')"
             >Cancel</v-btn
           >
 
           <v-btn
             color="error"
             size="small"
-            :loading="deleteLoader"
+            :loading="deleteLoaders.has(deleteMenu.budget?.id ?? '')"
             @click="deleteBudget(deleteMenu.budget!.id)"
             >Delete</v-btn
           >
@@ -76,7 +81,7 @@ const deleteMenu = ref<{ open: boolean; budget: BudgetListItem | null }>({
   open: false,
   budget: null,
 })
-const deleteLoader = ref(false)
+const deleteLoaders = ref<Set<string>>(new Set())
 
 onMounted(() => {
   getBudgets()
@@ -97,7 +102,7 @@ const onDeleteBudget = (budget: BudgetListItem) => {
 }
 
 const deleteBudget = async (budgetId: string) => {
-  deleteLoader.value = true
+  deleteLoaders.value.add(budgetId)
 
   try {
     const { data: deletedBudget } = await apiClient.delete(`/budgets/${budgetId}`)
@@ -118,7 +123,7 @@ const deleteBudget = async (budgetId: string) => {
       text: 'Something went wrong.',
     })
   } finally {
-    deleteLoader.value = false
+    deleteLoaders.value.delete(budgetId)
   }
 }
 

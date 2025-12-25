@@ -39,21 +39,30 @@
           deleteMenu.budgetItem!.description
         }}</strong
         >" (<span
-          class="text-body-2"
-          :class="deleteMenu.budgetItem!.type === 'EXPENSES' ? 'text-error' : 'text-primary'"
-          v-price="deleteMenu.budgetItem!.value"
+          v-if="deleteMenu.budgetItem!.type === 'EXPENSES'"
+          class="text-body-2 text-error"
+          v-price.minus="deleteMenu.budgetItem!.value"
+        /><span
+          v-else
+          class="text-body-2 text-primary"
+          v-price.plus="deleteMenu.budgetItem!.value"
         />) ?
       </div>
 
       <div class="d-flex align-center justify-center ga-2">
-        <v-btn variant="text" color="primary" size="small" @click="deleteMenu.open = false"
+        <v-btn
+          variant="text"
+          color="primary"
+          size="small"
+          @click="deleteMenu.open = false"
+          :disabled="deleteLoaders.has(deleteMenu.budgetItem?.id ?? '')"
           >Cancel</v-btn
         >
 
         <v-btn
           color="error"
           size="small"
-          :loading="deleteLoader"
+          :loading="deleteLoaders.has(deleteMenu.budgetItem?.id ?? '')"
           @click="deleteBudget(deleteMenu.budgetItem!.id)"
           >Delete</v-btn
         >
@@ -94,7 +103,7 @@ const budgetItems = computed(() =>
   type === 'INCOME' ? currentBudget.value!.income_items : currentBudget.value!.expense_items,
 )
 
-const deleteLoader = ref(false)
+const deleteLoaders = ref<Set<string>>(new Set())
 
 const onEditBudgetItem = (budgetItem: BudgetItem) => {
   dialog.value = {
@@ -111,7 +120,7 @@ const onDeleteBudgetItem = (budgetItem: BudgetItem) => {
 }
 
 const deleteBudget = async (budgetItemId: string) => {
-  deleteLoader.value = true
+  deleteLoaders.value.add(budgetItemId)
 
   try {
     const { data: deletedBudget } = await apiClient.delete(
@@ -138,7 +147,7 @@ const deleteBudget = async (budgetItemId: string) => {
       text: 'Something went wrong.',
     })
   } finally {
-    deleteLoader.value = false
+    deleteLoaders.value.delete(budgetItemId)
   }
 }
 </script>
