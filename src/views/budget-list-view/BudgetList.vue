@@ -30,6 +30,7 @@
     </FormDialog>
 
     <v-menu
+      v-if="deleteMenu.open"
       v-model="deleteMenu.open"
       :target="`#delete-menu-${deleteMenu.budget?.id}`"
       location="bottom end"
