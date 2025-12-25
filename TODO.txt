@@ -1,2 +1,0 @@
-add pagination & infinite scrolling
-add balance cap validator
