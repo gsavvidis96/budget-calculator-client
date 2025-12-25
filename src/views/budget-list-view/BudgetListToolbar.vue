@@ -46,8 +46,8 @@
         v-for="sortItem in sortMenuItems"
         :key="sortItem.label"
         class="d-flex align-center ga-4 sortby-item pa-2"
-        :class="{ active: sort === `${sortItem.value}:${sortItem.direcion}` }"
-        @click="onChangeSortBy(`${sortItem.value}:${sortItem.direcion}`)"
+        :class="{ active: sort === `${sortItem.value}:${sortItem.direction}` }"
+        @click="onChangeSortBy(`${sortItem.value}:${sortItem.direction}`)"
       >
         <div class="text-body-2 text-sm-body-1">{{ sortItem.label }}</div>
 
@@ -82,29 +82,29 @@ const sortMenuItems = [
     label: 'Creation Date (DESC)',
     isDefault: true,
     value: 'created_at',
-    direcion: 'desc',
+    direction: 'desc',
   },
   {
     label: 'Creation Date (ASC)',
     isDefault: false,
     value: 'created_at',
-    direcion: 'asc',
+    direction: 'asc',
   },
   {
     label: 'Balance (DESC)',
     isDefault: false,
     value: 'balance',
-    direcion: 'desc',
+    direction: 'desc',
   },
   {
     label: 'Balance (ASC)',
     isDefault: false,
     value: 'balance',
-    direcion: 'asc',
+    direction: 'asc',
   },
 ]
 
-const searchInput = ref('')
+const searchInput = ref(search.value)
 const sortMenu = ref(false)
 const dialog = ref(false)
 
@@ -124,7 +124,8 @@ watch(
 
 <style scoped lang="scss">
 .search-field {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .sortby-item {

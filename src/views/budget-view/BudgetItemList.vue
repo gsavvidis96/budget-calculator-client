@@ -63,7 +63,7 @@
           color="error"
           size="small"
           :loading="deleteLoaders.has(deleteMenu.budgetItem?.id ?? '')"
-          @click="deleteBudget(deleteMenu.budgetItem!.id)"
+          @click="deleteBudgetItem(deleteMenu.budgetItem!.id)"
           >Delete</v-btn
         >
       </div>
@@ -119,7 +119,7 @@ const onDeleteBudgetItem = (budgetItem: BudgetItem) => {
   }
 }
 
-const deleteBudget = async (budgetItemId: string) => {
+const deleteBudgetItem = async (budgetItemId: string) => {
   deleteLoaders.value.add(budgetItemId)
 
   try {

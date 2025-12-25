@@ -22,6 +22,7 @@
       class="flex-grow-0"
       density="compact"
       color="primary"
+      hide-details="auto"
       type="number"
       min="0"
       v-model.number="value"

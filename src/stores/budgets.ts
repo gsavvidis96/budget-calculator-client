@@ -46,12 +46,7 @@ export const useBudgetsStore = defineStore('budgets', () => {
     try {
       currentBudgetLoader.value = true
 
-      const { data } = await apiClient.get<Budget>(`/budgets/${budgetId}`, {
-        params: {
-          sort: sort.value,
-          ...(search.value && { search: search.value }),
-        },
-      })
+      const { data } = await apiClient.get<Budget>(`/budgets/${budgetId}`)
 
       currentBudget.value = data
     } catch (e) {

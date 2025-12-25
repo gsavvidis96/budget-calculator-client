@@ -1,5 +1,4 @@
 reusable error handling
-AI verification + testing
 update all packages
 
 add pagination & infinite scrolling
