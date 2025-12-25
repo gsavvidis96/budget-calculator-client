@@ -127,6 +127,8 @@ const deleteBudgetItem = async (budgetItemId: string) => {
       `/budgets/${currentBudget.value?.id}/budget-items/${budgetItemId}`,
     )
 
+    deleteMenu.value.open = false
+
     await getBudgetById(currentBudget.value!.id)
 
     budgetsFetched.value = false
@@ -137,8 +139,6 @@ const deleteBudgetItem = async (budgetItemId: string) => {
         deletedBudget.description
       }" was deleted.`,
     })
-
-    deleteMenu.value.open = false
   } catch (e) {
     console.error(e)
 

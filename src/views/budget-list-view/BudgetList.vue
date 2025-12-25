@@ -107,14 +107,14 @@ const deleteBudget = async (budgetId: string) => {
   try {
     const { data: deletedBudget } = await apiClient.delete(`/budgets/${budgetId}`)
 
+    deleteMenu.value.open = false
+
     await getBudgets({ refresh: true })
 
     openSnackbar({
       color: 'warning',
       text: `Budget "${deletedBudget.title}" was deleted.`,
     })
-
-    deleteMenu.value.open = false
   } catch (e) {
     console.error(e)
 
