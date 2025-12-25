@@ -50,15 +50,6 @@
         @click="onChangeSortBy(`${sortItem.value}:${sortItem.direction}`)"
       >
         <div class="text-body-2 text-sm-body-1">{{ sortItem.label }}</div>
-
-        <v-chip
-          :size="smAndUp ? 'small' : 'x-small'"
-          v-if="sortItem.isDefault"
-          variant="outlined"
-          class="font-weight-medium"
-        >
-          Default
-        </v-chip>
       </div>
     </div>
   </v-menu>
@@ -71,7 +62,7 @@
 <script setup lang="ts">
 import { DEFAULT_SORTBY } from '@/constants'
 
-const { xs, smAndUp } = useDisplay()
+const { xs } = useDisplay()
 
 const budgetStore = useBudgetsStore()
 
