@@ -1,59 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/LoginView.vue'
-import BudgetList from '@/views/budget-list-view/BudgetList.vue'
-import BudgetView from '@/views/budget-view/BudgetView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior: () => ({ top: 0 }),
   routes: [
-    { path: '/:pathMatch(.*)*', redirect: '/' },
     {
-      path: '/',
-      redirect: '/budgets',
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue'),
+      meta: { public: true },
     },
     {
       path: '/budgets',
-      component: BudgetList,
+      name: 'budgets',
+      component: () => import('@/views/BudgetsView.vue'),
     },
     {
       path: '/budgets/:id',
-      component: BudgetView,
+      name: 'budget',
+      component: () => import('@/views/BudgetDetailView.vue'),
+      props: true,
     },
     {
-      path: '/login',
-      component: LoginView,
-      meta: { requiresAuth: false },
+      path: '/:pathMatch(.*)*',
+      redirect: '/budgets',
     },
   ],
 })
 
-router.beforeEach(async (to) => {
-  // Remove hash from url (from supabase login)
-  if (to.hash)
-    return {
-      path: to.path,
-      replace: true,
-    }
+router.beforeEach((to) => {
+  const auth = useAuthStore()
 
-  const { data } = await supabase.auth.getClaims()
-
-  // Redirect logged-in users away from auth pages
-  if (data?.claims && to.meta.requiresAuth === false) {
-    return {
-      path: '/',
-    }
+  if (!to.meta.public && !auth.user) {
+    auth.rememberRedirect(to.fullPath)
+    return { name: 'login' }
   }
 
-  // Allow public routes for non-authenticated users
-  if (to.meta.requiresAuth === false) {
-    return
+  if (to.meta.public && auth.user) {
+    return auth.consumeRedirect()
   }
-
-  // Check authentication for protected routes
-  if (!data?.claims)
-    return {
-      path: '/login',
-      state: { redirect: to.fullPath },
-    }
 })
+
 export default router

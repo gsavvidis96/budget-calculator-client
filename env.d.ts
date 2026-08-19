@@ -1,9 +1,12 @@
 /// <reference types="vite/client" />
 
-import type dayjs from 'dayjs'
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string
+  readonly VITE_SUPABASE_URL: string
+  readonly VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: string
+  readonly VITE_PRIMEUI_LICENSE: string
+}
 
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $dayjs: typeof dayjs
-  }
+interface ImportMeta {
+  readonly env: ImportMetaEnv
 }
