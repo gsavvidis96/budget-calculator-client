@@ -4,9 +4,12 @@
   >
     <div class="mx-auto flex h-[4.5rem] w-[min(100%-2.5rem,80rem)] items-center gap-3">
       <RouterLink to="/budgets" class="flex min-w-0 items-center gap-3 no-underline">
-        <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-teal-600 text-white">
-          <Wallet class="size-5" aria-hidden="true" />
-        </span>
+        <img
+          src="/app-icon.svg"
+          alt=""
+          class="size-10 shrink-0 rounded-xl shadow-sm"
+          aria-hidden="true"
+        />
         <span class="min-w-0">
           <span class="block truncate text-base font-bold text-neutral-900 dark:text-white"
             >Budget Calculator</span
@@ -15,6 +18,8 @@
       </RouterLink>
 
       <div class="ml-auto flex items-center gap-1.5">
+        <PwaInstallButton />
+
         <Button
           text
           rounded
@@ -59,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { Moon, SignOut, Sun, User, Wallet } from '@primeicons/vue'
+import { Moon, SignOut, Sun, User } from '@primeicons/vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Popover from 'primevue/popover'

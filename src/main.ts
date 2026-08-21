@@ -12,6 +12,8 @@ import ToastService from 'primevue/toastservice'
 import App from './App.vue'
 import router from './router'
 import { useAuthStore } from './stores/auth'
+import { initializePwaInstall } from './composables/usePwaInstall'
+import { registerSW } from 'virtual:pwa-register'
 
 const BudgetTheme = definePreset(Aura, {
   semantic: {
@@ -32,6 +34,8 @@ const BudgetTheme = definePreset(Aura, {
 })
 
 const app = createApp(App)
+initializePwaInstall()
+registerSW({ immediate: true })
 const pinia = createPinia()
 const queryClient = new QueryClient({
   defaultOptions: {

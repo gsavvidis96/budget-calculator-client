@@ -1,6 +1,8 @@
 <template>
   <div class="flex min-h-screen flex-col">
-    <header class="flex h-[4.5rem] shrink-0 items-center justify-end px-5 sm:px-8">
+    <header class="flex h-[4.5rem] shrink-0 items-center justify-end gap-1.5 px-5 sm:px-8">
+      <PwaInstallButton />
+
       <Button
         text
         rounded
@@ -16,9 +18,7 @@
     <main class="flex flex-1 items-center justify-center p-5 pb-[4.5rem]">
       <section class="surface-card w-full max-w-md rounded-2xl p-7 sm:p-9">
         <div class="mb-7 flex items-center gap-3">
-          <span class="grid size-11 place-items-center rounded-xl bg-teal-600 text-white">
-            <Wallet class="size-5" aria-hidden="true" />
-          </span>
+          <img src="/app-icon.svg" alt="" class="size-11 rounded-xl shadow-sm" aria-hidden="true" />
           <div>
             <h1 class="m-0 text-xl font-bold text-neutral-950 dark:text-white">
               Budget Calculator
@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { Moon, Spinner, Sun, Wallet } from '@primeicons/vue'
+import { Moon, Spinner, Sun } from '@primeicons/vue'
 import { useToast } from 'primevue/usetoast'
 import { ref } from 'vue'
 import googleIcon from '@/assets/google-icon.svg'

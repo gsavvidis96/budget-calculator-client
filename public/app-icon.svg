@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Budget Calculator wallet</title>
+  <rect width="512" height="512" fill="#0f766e" />
+  <path
+    fill="#14b8a6"
+    d="M0 364 364 0h148v148L148 512H0Z"
+    opacity=".42"
+  />
+  <path
+    fill="#fff"
+    d="M343 144a32 32 0 0 1 32 32v26h9a32 32 0 0 1 32 32v143a32 32 0 0 1-32 32H128a32 32 0 0 1-32-32V234c0-24 15-44 37-51l196-38c5-1 9-1 14-1Zm-215 90v143h256V234H128Zm188 48h68v48h-68a24 24 0 0 1 0-48Zm27-106-154 30h154v-30Z"
+  />
+</svg>
