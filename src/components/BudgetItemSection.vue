@@ -43,32 +43,26 @@
           <p class="m-0 truncate text-base font-bold text-neutral-800 dark:text-neutral-100">
             {{ item.description }}
           </p>
-          <div
-            v-if="type === 'EXPENSES' && item.expense_percentage !== undefined"
-            class="mt-2 flex items-center gap-2"
-          >
-            <div class="h-1.5 w-20 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
-              <div
-                class="h-full rounded-full bg-red-500"
-                :style="{ width: `${Math.min(item.expense_percentage, 100)}%` }"
-              />
-            </div>
-            <span class="text-xs font-semibold text-neutral-500 dark:text-neutral-400"
-              >{{ formatPercentage(item.expense_percentage) }} of income</span
-            >
-          </div>
         </div>
 
-        <p
-          class="money m-0 shrink-0 text-base font-bold"
-          :class="
-            type === 'INCOME'
-              ? 'text-emerald-600 dark:text-emerald-400'
-              : 'text-red-600 dark:text-red-400'
-          "
-        >
-          {{ type === 'INCOME' ? '+' : '−' }}{{ formatCurrency(item.value) }}
-        </p>
+        <div class="flex shrink-0 items-center gap-2">
+          <span
+            v-if="type === 'EXPENSES' && item.expense_percentage !== undefined"
+            class="inline-flex items-center rounded-full border border-red-200/80 bg-red-50 px-2 py-0.5 text-[0.7rem] leading-4 font-semibold text-red-600 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-300"
+          >
+            {{ formatPercentage(item.expense_percentage) }}
+          </span>
+          <p
+            class="money m-0 text-base font-bold"
+            :class="
+              type === 'INCOME'
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : 'text-red-600 dark:text-red-400'
+            "
+          >
+            {{ type === 'INCOME' ? '+' : '−' }}{{ formatCurrency(item.value) }}
+          </p>
+        </div>
 
         <div class="flex shrink-0 items-center gap-0.5">
           <Button
