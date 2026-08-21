@@ -3,12 +3,12 @@
     v-if="canInstall"
     outlined
     severity="secondary"
-    class="max-sm:fixed max-sm:bottom-[calc(1rem+env(safe-area-inset-bottom))] max-sm:left-1/2 max-sm:z-50 max-sm:-translate-x-1/2 max-sm:rounded-full! max-sm:border-teal-400! max-sm:bg-teal-400! max-sm:text-neutral-950! max-sm:shadow-xl"
+    :class="mobile ? 'w-full sm:hidden' : 'hidden sm:inline-flex'"
     aria-label="Install Budget Calculator"
     @click="install"
   >
     <Download class="size-[1.1rem]" aria-hidden="true" />
-    <span>Install app</span>
+    <span :class="mobile ? '' : 'hidden lg:inline'">Install app</span>
   </Button>
 
   <Dialog
@@ -48,6 +48,8 @@
 import { Download, ShareAlt } from '@primeicons/vue'
 import { ref } from 'vue'
 import { usePwaInstall } from '@/composables/usePwaInstall'
+
+defineProps<{ mobile?: boolean }>()
 
 const showInstructions = ref(false)
 const { canInstall, hasNativePrompt, manualInstallPlatform, requestInstall } = usePwaInstall()

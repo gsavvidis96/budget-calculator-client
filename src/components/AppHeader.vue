@@ -52,6 +52,7 @@
                 {{ auth.user?.email }}
               </p>
             </div>
+            <PwaInstallButton mobile />
             <Button severity="secondary" outlined class="w-full" @click="confirmLogout">
               <SignOut class="size-4" aria-hidden="true" />
               <span>Sign out</span>

@@ -51,6 +51,10 @@
           <img v-else :src="googleIcon" class="size-5" alt="" />
           <span>{{ loading ? 'Opening Google…' : 'Sign in with Google' }}</span>
         </Button>
+
+        <div class="mt-3 sm:hidden">
+          <PwaInstallButton mobile />
+        </div>
       </section>
     </main>
   </div>
