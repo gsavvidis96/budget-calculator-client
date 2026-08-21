@@ -3,11 +3,12 @@
     v-if="canInstall"
     outlined
     severity="secondary"
+    class="max-sm:fixed max-sm:bottom-[calc(1rem+env(safe-area-inset-bottom))] max-sm:left-1/2 max-sm:z-50 max-sm:-translate-x-1/2 max-sm:rounded-full! max-sm:border-teal-400! max-sm:bg-teal-400! max-sm:text-neutral-950! max-sm:shadow-xl"
     aria-label="Install Budget Calculator"
     @click="install"
   >
     <Download class="size-[1.1rem]" aria-hidden="true" />
-    <span class="hidden lg:inline">Install app</span>
+    <span>Install app</span>
   </Button>
 
   <Dialog

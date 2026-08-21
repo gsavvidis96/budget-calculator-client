@@ -18,7 +18,7 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'app-icon.svg'],
       manifest: {
         name: 'Budget Calculator',
-        short_name: 'Budget',
+        short_name: 'Budget Calculator',
         description: 'Plan income, expenses, and everyday budgets from any device.',
         theme_color: '#0f766e',
         background_color: '#f8fafc',
