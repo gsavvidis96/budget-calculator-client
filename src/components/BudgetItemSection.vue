@@ -11,8 +11,8 @@
             : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-300'
         "
       >
-        <ArrowDown v-if="type === 'INCOME'" class="size-4" aria-hidden="true" />
-        <ArrowUp v-else class="size-4" aria-hidden="true" />
+        <MoneyBill v-if="type === 'INCOME'" class="size-4" aria-hidden="true" />
+        <Receipt v-else class="size-4" aria-hidden="true" />
       </span>
       <div>
         <h2 class="m-0 text-xl font-bold text-neutral-900 dark:text-white">
@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDown, ArrowUp, Pencil, Plus, Trash } from '@primeicons/vue'
+import { MoneyBill, Pencil, Plus, Receipt, Trash } from '@primeicons/vue'
 import type { BudgetItem, BudgetItemType } from '@/types'
 import { formatCurrency, formatPercentage } from '@/utils/format'
 

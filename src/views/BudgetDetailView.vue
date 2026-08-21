@@ -94,7 +94,7 @@
             <div
               class="flex items-center gap-2 text-sm font-bold text-emerald-700 dark:text-emerald-300"
             >
-              <ArrowDown class="size-3.5" aria-hidden="true" /> Income
+              <MoneyBill class="size-3.5" aria-hidden="true" /> Income
             </div>
             <p class="money mt-3 mb-0 text-xl font-bold text-emerald-700 dark:text-emerald-300">
               {{ formatCurrency(budget.total_income) }}
@@ -105,7 +105,7 @@
           >
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-2 text-sm font-bold text-red-700 dark:text-red-300">
-                <ArrowUp class="size-3.5" aria-hidden="true" /> Expenses
+                <Receipt class="size-3.5" aria-hidden="true" /> Expenses
               </div>
               <span class="text-xs font-semibold text-red-700/75 dark:text-red-300/75">
                 {{ formatPercentage(budget.expenses_percentage) }} of income
@@ -148,11 +148,11 @@
 
 <script setup lang="ts">
 import {
-  ArrowDown,
   ArrowLeft,
-  ArrowUp,
   ExclamationTriangle,
+  MoneyBill,
   Pencil,
+  Receipt,
   Refresh,
   Thumbtack,
 } from '@primeicons/vue'
