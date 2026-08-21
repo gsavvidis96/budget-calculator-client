@@ -4,7 +4,7 @@
 
     <main :class="auth.user ? 'app-main' : 'min-h-screen'">
       <RouterView v-slot="{ Component }">
-        <Transition name="page" mode="out-in">
+        <Transition name="page" mode="out-in" @after-leave="resetScroll">
           <component :is="Component" />
         </Transition>
       </RouterView>
@@ -19,4 +19,8 @@
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+
+const resetScroll = () => {
+  window.scrollTo({ top: 0, left: 0 })
+}
 </script>

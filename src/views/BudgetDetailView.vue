@@ -87,7 +87,7 @@
           </Button>
         </div>
 
-        <div class="relative mt-9 grid gap-3 sm:grid-cols-3">
+        <div class="relative mt-9 grid gap-3 sm:grid-cols-2">
           <div
             class="rounded-xl border border-emerald-100 bg-emerald-50/65 p-4 dark:border-emerald-500/15 dark:bg-emerald-500/8"
           >
@@ -103,31 +103,17 @@
           <div
             class="rounded-xl border border-red-100 bg-red-50/65 p-4 dark:border-red-500/15 dark:bg-red-500/8"
           >
-            <div class="flex items-center gap-2 text-sm font-bold text-red-700 dark:text-red-300">
-              <ArrowUp class="size-3.5" aria-hidden="true" /> Expenses
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 text-sm font-bold text-red-700 dark:text-red-300">
+                <ArrowUp class="size-3.5" aria-hidden="true" /> Expenses
+              </div>
+              <span class="text-xs font-semibold text-red-700/75 dark:text-red-300/75">
+                {{ formatPercentage(budget.expenses_percentage) }} of income
+              </span>
             </div>
             <p class="money mt-3 mb-0 text-xl font-bold text-red-700 dark:text-red-300">
               {{ formatCurrency(budget.total_expenses) }}
             </p>
-          </div>
-          <div
-            class="rounded-xl border border-neutral-200 bg-neutral-50/65 p-4 dark:border-neutral-700 dark:bg-neutral-800/55"
-          >
-            <div
-              class="flex items-center justify-between gap-3 text-sm font-bold text-neutral-500 dark:text-neutral-400"
-            >
-              <span class="flex items-center gap-2"
-                ><Percentage class="size-3.5" aria-hidden="true" /> Income spent</span
-              >
-              <span>{{ formatPercentage(budget.expenses_percentage) }}</span>
-            </div>
-            <div class="mt-4 h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-              <div
-                class="h-full rounded-full transition-[width]"
-                :class="budget.expenses_percentage > 100 ? 'bg-red-500' : 'bg-teal-500'"
-                :style="{ width: `${Math.min(budget.expenses_percentage, 100)}%` }"
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -167,7 +153,6 @@ import {
   ArrowUp,
   ExclamationTriangle,
   Pencil,
-  Percentage,
   Refresh,
   Thumbtack,
 } from '@primeicons/vue'

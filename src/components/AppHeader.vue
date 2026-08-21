@@ -2,7 +2,7 @@
   <header
     class="sticky top-0 z-40 border-b border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-900"
   >
-    <div class="mx-auto flex h-[4.5rem] w-[min(100%-2rem,80rem)] items-center gap-3">
+    <div class="mx-auto flex h-[4.5rem] w-[min(100%-2.5rem,80rem)] items-center gap-3">
       <RouterLink to="/budgets" class="flex min-w-0 items-center gap-3 no-underline">
         <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-teal-600 text-white">
           <Wallet class="size-5" aria-hidden="true" />

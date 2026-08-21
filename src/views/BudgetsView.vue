@@ -45,6 +45,7 @@
         option-label="label"
         option-value="value"
         fluid
+        :disabled="query.isFetching.value"
         aria-label="Sort budgets"
       >
         <template #value="slotProps">
@@ -95,7 +96,11 @@
     </PageState>
 
     <template v-else-if="query.data.value">
-      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div
+        class="grid gap-4 transition-opacity sm:grid-cols-2 xl:grid-cols-3"
+        :class="isRefreshing ? 'opacity-60' : 'opacity-100'"
+        :aria-busy="isRefreshing"
+      >
         <BudgetCard
           v-for="budget in query.data.value.budgets"
           :key="budget.id"
@@ -159,6 +164,7 @@ const params = computed<BudgetListParams>(() => ({
 }))
 
 const query = useBudgetsQuery(params)
+const isRefreshing = computed(() => query.isFetching.value && !query.isPending.value)
 
 watchDebounced(
   searchInput,

@@ -4,7 +4,7 @@
     modal
     :header="`${item ? 'Edit' : 'Add'} ${type === 'INCOME' ? 'income' : 'expense'}`"
     :style="{ width: '30rem' }"
-    :breakpoints="{ '640px': 'calc(100vw - 1.25rem)' }"
+    :breakpoints="{ '640px': 'calc(100vw - 2.5rem)' }"
     :draggable="false"
   >
     <p class="mt-0 mb-6 text-base leading-7 text-neutral-500 dark:text-neutral-400">
@@ -21,7 +21,7 @@
       :initial-values="initialValues"
       :resolver="resolver"
       :validate-on-value-update="true"
-      :validate-on-blur="true"
+      :validate-on-blur="false"
       class="flex flex-col gap-5"
       @submit="submit"
     >
@@ -73,7 +73,7 @@
         }}</Message>
       </div>
 
-      <div class="mt-2 flex justify-end gap-3">
+      <div class="mt-2 flex flex-wrap justify-end gap-3">
         <Button
           type="button"
           severity="secondary"

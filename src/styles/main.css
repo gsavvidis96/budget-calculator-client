@@ -50,6 +50,11 @@ button,
   font-weight: 500;
 }
 
+.p-inputtext.p-invalid:enabled:focus {
+  border-color: var(--p-inputtext-invalid-border-color);
+  outline-color: var(--p-inputtext-invalid-border-color);
+}
+
 .bg-app {
   background: #f8fafc;
 }
@@ -71,9 +76,17 @@ button,
 }
 
 .page-shell {
-  width: min(100% - 2rem, 80rem);
+  width: min(100% - 2.5rem, 80rem);
   margin-inline: auto;
   padding-block: 2.5rem 4rem;
+}
+
+.p-dialog {
+  max-width: calc(100vw - 2.5rem);
+}
+
+.p-dialog-footer {
+  flex-wrap: wrap;
 }
 
 .surface-card {
@@ -116,7 +129,6 @@ button,
 
 @media (max-width: 640px) {
   .page-shell {
-    width: min(100% - 1.25rem, 80rem);
     padding-block: 1.5rem 3rem;
   }
 }
