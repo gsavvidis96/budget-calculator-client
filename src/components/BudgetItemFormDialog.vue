@@ -136,7 +136,11 @@ const formKey = computed(() => `${props.item?.id ?? 'new'}-${props.type}-${visib
 const mutation = useMutation({
   mutationFn: (input: BudgetItemInput) =>
     props.item
-      ? updateBudgetItem({ budgetId: props.budgetId, itemId: props.item.id, input })
+      ? updateBudgetItem({
+          budgetId: props.budgetId,
+          itemId: props.item.id,
+          input: { description: input.description, value: input.value },
+        })
       : createBudgetItem({ budgetId: props.budgetId, input }),
   onSuccess: async (savedItem) => {
     await Promise.all([

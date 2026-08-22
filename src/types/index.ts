@@ -27,6 +27,7 @@ export type BudgetItem = {
   type: BudgetItemType
   description: string
   value: number
+  position: number
   expense_percentage?: number
   created_at: string
   updated_at: string
@@ -66,6 +67,11 @@ export type BudgetItemInput = {
   description: string
   value: number
   type: BudgetItemType
+}
+
+export type ReorderBudgetItemsInput = {
+  type: BudgetItemType
+  budget_item_ids: string[]
 }
 
 export type ApiErrorBody = {

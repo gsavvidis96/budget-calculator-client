@@ -7,6 +7,7 @@ import type {
   BudgetListParams,
   BudgetListResponse,
   BudgetSummary,
+  ReorderBudgetItemsInput,
 } from '@/types'
 
 export const getBudgets = async (params: BudgetListParams) => {
@@ -58,7 +59,7 @@ export const updateBudgetItem = async ({
 }: {
   budgetId: string
   itemId: string
-  input: Partial<BudgetItemInput>
+  input: Partial<Omit<BudgetItemInput, 'type'>>
 }) => {
   const { data } = await apiClient.patch<BudgetItem>(
     `/budgets/${budgetId}/budget-items/${itemId}`,
@@ -76,4 +77,18 @@ export const deleteBudgetItem = async ({
 }) => {
   const { data } = await apiClient.delete<BudgetItem>(`/budgets/${budgetId}/budget-items/${itemId}`)
   return data
+}
+
+export const reorderBudgetItems = async ({
+  budgetId,
+  input,
+}: {
+  budgetId: string
+  input: ReorderBudgetItemsInput
+}) => {
+  const { data } = await apiClient.put<{ budget_items: BudgetItem[] }>(
+    `/budgets/${budgetId}/budget-items/reorder`,
+    input,
+  )
+  return data.budget_items
 }

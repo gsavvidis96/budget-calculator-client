@@ -122,16 +122,26 @@
         <BudgetItemSection
           type="INCOME"
           :items="budget.income_items"
+          :reordering="
+            reorderMutation.isPending.value && reorderMutation.variables.value?.type === 'INCOME'
+          "
+          :reorder-disabled="reorderMutation.isPending.value"
           @add="openItemDialog('INCOME')"
           @edit="openEditItem"
           @delete="confirmDeleteItem"
+          @reorder="reorderItems"
         />
         <BudgetItemSection
           type="EXPENSES"
           :items="budget.expense_items"
+          :reordering="
+            reorderMutation.isPending.value && reorderMutation.variables.value?.type === 'EXPENSES'
+          "
+          :reorder-disabled="reorderMutation.isPending.value"
           @add="openItemDialog('EXPENSES')"
           @edit="openEditItem"
           @delete="confirmDeleteItem"
+          @reorder="reorderItems"
         />
       </div>
 
@@ -160,9 +170,9 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { computed, reactive, ref } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
-import { deleteBudgetItem } from '@/api/budgets'
+import { deleteBudgetItem, reorderBudgetItems } from '@/api/budgets'
 import { budgetKeys, useBudgetQuery } from '@/queries/budgets'
-import type { BudgetItem, BudgetItemType } from '@/types'
+import type { BudgetDetails, BudgetItem, BudgetItemType } from '@/types'
 import { getAppError } from '@/utils/errors'
 import { formatCurrency, formatDate, formatPercentage } from '@/utils/format'
 
@@ -198,6 +208,52 @@ const openEditItem = (item: BudgetItem) => {
   itemDialog.type = item.type
   itemDialog.item = item
   itemDialog.open = true
+}
+
+const reorderMutation = useMutation({
+  mutationFn: ({ type, itemIds }: { type: BudgetItemType; itemIds: string[] }) =>
+    reorderBudgetItems({
+      budgetId: props.id,
+      input: { type, budget_item_ids: itemIds },
+    }),
+  onMutate: async ({ type, itemIds }) => {
+    const queryKey = budgetKeys.detail(props.id)
+    await queryClient.cancelQueries({ queryKey })
+    const previous = queryClient.getQueryData<BudgetDetails>(queryKey)
+    const itemKey = type === 'INCOME' ? 'income_items' : 'expense_items'
+
+    queryClient.setQueryData<BudgetDetails>(queryKey, (current) => {
+      if (!current) return current
+      const itemsById = new Map(current[itemKey].map((item) => [item.id, item]))
+      return {
+        ...current,
+        [itemKey]: itemIds.map((id, position) => ({ ...itemsById.get(id)!, position })),
+      }
+    })
+
+    return { previous, itemKey }
+  },
+  onSuccess: (items, _variables, context) => {
+    queryClient.setQueryData<BudgetDetails>(budgetKeys.detail(props.id), (current) =>
+      current ? { ...current, [context.itemKey]: items } : current,
+    )
+  },
+  onError: (error, _variables, context) => {
+    if (context?.previous) {
+      queryClient.setQueryData(budgetKeys.detail(props.id), context.previous)
+    }
+    toast.add({
+      severity: 'error',
+      summary: 'Could not reorder items',
+      detail: getAppError(error).message,
+      life: 5000,
+    })
+  },
+})
+
+const reorderItems = (type: BudgetItemType, itemIds: string[]) => {
+  if (reorderMutation.isPending.value) return
+  reorderMutation.mutate({ type, itemIds })
 }
 
 const deleteMutation = useMutation({
