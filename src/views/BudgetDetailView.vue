@@ -134,6 +134,8 @@
         <BudgetItemSection
           type="EXPENSES"
           :items="budget.expense_items"
+          :checking-item-id="checkMutation.variables.value?.item.id"
+          :check-disabled="checkMutation.isPending.value"
           :reordering="
             reorderMutation.isPending.value && reorderMutation.variables.value?.type === 'EXPENSES'
           "
@@ -141,6 +143,7 @@
           @add="openItemDialog('EXPENSES')"
           @edit="openEditItem"
           @delete="confirmDeleteItem"
+          @check="checkExpense"
           @reorder="reorderItems"
         />
       </div>
@@ -170,7 +173,7 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { computed, reactive, ref } from 'vue'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
-import { deleteBudgetItem, reorderBudgetItems } from '@/api/budgets'
+import { deleteBudgetItem, reorderBudgetItems, updateBudgetItem } from '@/api/budgets'
 import { budgetKeys, useBudgetQuery } from '@/queries/budgets'
 import type { BudgetDetails, BudgetItem, BudgetItemType } from '@/types'
 import { getAppError } from '@/utils/errors'
@@ -254,6 +257,34 @@ const reorderMutation = useMutation({
 const reorderItems = (type: BudgetItemType, itemIds: string[]) => {
   if (reorderMutation.isPending.value) return
   reorderMutation.mutate({ type, itemIds })
+}
+
+const checkMutation = useMutation({
+  mutationFn: ({ item, checked }: { item: BudgetItem; checked: boolean }) =>
+    updateBudgetItem({
+      budgetId: props.id,
+      itemId: item.id,
+      input: { is_checked: checked },
+    }),
+  onSuccess: async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: budgetKeys.detail(props.id) }),
+      queryClient.invalidateQueries({ queryKey: budgetKeys.lists() }),
+    ])
+  },
+  onError: (error) => {
+    toast.add({
+      severity: 'error',
+      summary: 'Could not update expense',
+      detail: getAppError(error).message,
+      life: 5000,
+    })
+  },
+})
+
+const checkExpense = (item: BudgetItem, checked: boolean) => {
+  if (checkMutation.isPending.value) return
+  checkMutation.mutate({ item, checked })
 }
 
 const deleteMutation = useMutation({

@@ -4,6 +4,7 @@ import type {
   BudgetInput,
   BudgetItem,
   BudgetItemInput,
+  BudgetItemUpdateInput,
   BudgetListParams,
   BudgetListResponse,
   BudgetSummary,
@@ -59,7 +60,7 @@ export const updateBudgetItem = async ({
 }: {
   budgetId: string
   itemId: string
-  input: Partial<Omit<BudgetItemInput, 'type'>>
+  input: BudgetItemUpdateInput
 }) => {
   const { data } = await apiClient.patch<BudgetItem>(
     `/budgets/${budgetId}/budget-items/${itemId}`,

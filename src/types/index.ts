@@ -27,6 +27,7 @@ export type BudgetItem = {
   type: BudgetItemType
   description: string
   value: number
+  is_checked?: boolean
   position: number
   expense_percentage?: number
   created_at: string
@@ -67,6 +68,12 @@ export type BudgetItemInput = {
   description: string
   value: number
   type: BudgetItemType
+}
+
+export type BudgetItemUpdateInput = {
+  description?: string
+  value?: number
+  is_checked?: boolean
 }
 
 export type ReorderBudgetItemsInput = {
