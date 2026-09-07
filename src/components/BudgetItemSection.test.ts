@@ -72,6 +72,23 @@ describe('BudgetItemSection', () => {
     expect(wrapper.emitted('reorder')).toBeUndefined()
   })
 
+  it('keeps rows scrollable normally and makes the whole row draggable in reorder mode', async () => {
+    const wrapper = mount(BudgetItemSection, {
+      props: {
+        type: 'INCOME',
+        items: [makeItem('salary', 'Salary', 0), makeItem('bonus', 'Bonus', 1)],
+      },
+      global,
+    })
+
+    expect(wrapper.get('article').classes()).toContain('touch-pan-y')
+    await wrapper.get('[data-mobile-reorder-toggle]').trigger('click')
+
+    expect(wrapper.get('article').classes()).toContain('touch-none')
+    expect(wrapper.text()).toContain('Drag items to arrange')
+    expect(wrapper.get('[data-mobile-reorder-toggle]').attributes('aria-pressed')).toBe('true')
+  })
+
   it('only renders checked-state controls for expenses', () => {
     const income = mount(BudgetItemSection, {
       props: { type: 'INCOME', items: [makeItem('salary', 'Salary', 0)] },

@@ -1,7 +1,7 @@
 <template>
   <section class="surface-card overflow-hidden rounded-2xl">
     <header
-      class="flex items-center gap-4 border-b border-neutral-200 px-5 py-5 sm:px-6 dark:border-neutral-700/80"
+      class="flex items-center gap-3 border-b border-neutral-200 px-5 py-5 sm:gap-4 sm:px-6 dark:border-neutral-700/80"
     >
       <span
         class="grid size-10 shrink-0 place-items-center rounded-2xl"
@@ -14,16 +14,35 @@
         <MoneyBill v-if="type === 'INCOME'" class="size-4" aria-hidden="true" />
         <Receipt v-else class="size-4" aria-hidden="true" />
       </span>
-      <div>
+      <div class="min-w-0">
         <h2 class="m-0 text-xl font-bold text-neutral-900 dark:text-white">
           {{ type === 'INCOME' ? 'Income' : 'Expenses' }}
         </h2>
-        <p class="mt-0.5 mb-0 text-sm text-neutral-500 dark:text-neutral-400">
+        <p class="mt-0.5 mb-0 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
           {{ items.length }} {{ items.length === 1 ? 'item' : 'items' }}
         </p>
+        <button
+          v-if="items.length > 1"
+          data-mobile-reorder-toggle
+          type="button"
+          class="mt-1 block cursor-pointer whitespace-nowrap border-0 bg-transparent p-0 text-xs font-bold text-neutral-500 underline decoration-neutral-400/60 underline-offset-2 transition-colors hover:text-neutral-800 disabled:opacity-40 sm:hidden dark:text-neutral-400 dark:hover:text-neutral-100"
+          :class="
+            mobileReorderMode
+              ? type === 'INCOME'
+                ? 'text-emerald-600 dark:text-emerald-300'
+                : 'text-red-600 dark:text-red-300'
+              : ''
+          "
+          :aria-label="mobileReorderMode ? 'Finish reordering items' : 'Reorder items'"
+          :aria-pressed="mobileReorderMode"
+          :disabled="reorderDisabled"
+          @click="toggleMobileReorderMode"
+        >
+          {{ mobileReorderMode ? 'Done' : 'Reorder' }}
+        </button>
       </div>
       <Button
-        class="ml-auto"
+        class="ml-auto shrink-0"
         :severity="type === 'EXPENSES' ? 'danger' : undefined"
         @click="emit('add')"
       >
@@ -31,6 +50,14 @@
         <span>Add</span>
       </Button>
     </header>
+
+    <div
+      v-if="mobileReorderMode"
+      class="border-b border-neutral-200 bg-neutral-50 px-5 py-2 text-center text-xs font-semibold text-neutral-500 sm:hidden dark:border-neutral-700/80 dark:bg-neutral-800/50 dark:text-neutral-400"
+      role="status"
+    >
+      Drag items to arrange
+    </div>
 
     <div
       v-if="localItems.length"
@@ -59,12 +86,13 @@
         tabindex="0"
         :aria-label="`Reorder ${item.description}. Use drag and drop or the arrow keys.`"
         :aria-busy="checkingItemId === item.id"
-        class="group relative flex cursor-grab touch-none items-center gap-3 px-5 py-4 transition-[background-color,opacity,transform] before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-r-full before:opacity-0 before:transition-opacity hover:bg-neutral-100 hover:before:opacity-100 focus:bg-neutral-100 focus:outline-none focus:before:opacity-100 active:cursor-grabbing sm:px-6 dark:hover:bg-neutral-800/90 dark:focus:bg-neutral-800/90"
+        class="group relative flex cursor-grab items-center gap-2 px-5 py-4 transition-[background-color,opacity,transform] before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-r-full before:opacity-0 before:transition-opacity hover:bg-neutral-100 hover:before:opacity-100 focus:bg-neutral-100 focus:outline-none focus:before:opacity-100 active:cursor-grabbing sm:gap-3 sm:px-6 sm:touch-auto dark:hover:bg-neutral-800/90 dark:focus:bg-neutral-800/90"
         :class="[
           type === 'INCOME' ? 'before:bg-emerald-500' : 'before:bg-red-500',
           type === 'EXPENSES' && item.is_checked ? 'bg-neutral-50/80 dark:bg-neutral-900/30' : '',
           draggingId === item.id ? 'z-10 opacity-55' : '',
           reordering ? 'pointer-events-none opacity-70' : '',
+          mobileReorderMode ? 'touch-none bg-neutral-50/70 dark:bg-neutral-800/30' : 'touch-pan-y',
         ]"
         @dragstart="startMouseDrag(item.id, $event)"
         @dragenter.prevent="moveDraggedItem(item.id)"
@@ -97,9 +125,9 @@
           />
         </div>
 
-        <div class="min-w-0 flex-1">
+        <div class="min-w-0 flex-1 sm:flex sm:items-center sm:gap-3">
           <p
-            class="m-0 truncate text-base font-bold"
+            class="m-0 min-w-0 flex-1 break-words text-base leading-5 font-bold"
             :class="
               type === 'EXPENSES' && item.is_checked
                 ? 'text-neutral-400 line-through dark:text-neutral-500'
@@ -108,35 +136,38 @@
           >
             {{ item.description }}
           </p>
+
+          <div class="mt-1.5 flex shrink-0 items-center gap-2 sm:mt-0">
+            <span
+              v-if="type === 'EXPENSES' && item.expense_percentage !== undefined"
+              class="inline-flex whitespace-nowrap items-center rounded-full border px-2 py-0.5 text-[0.7rem] leading-4 font-semibold"
+              :class="
+                item.is_checked
+                  ? 'border-neutral-200 bg-neutral-100 text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-500'
+                  : 'border-red-200/80 bg-red-50 text-red-600 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-300'
+              "
+            >
+              {{ formatPercentage(item.expense_percentage) }}
+            </span>
+            <p
+              class="money m-0 whitespace-nowrap text-base font-bold"
+              :class="
+                type === 'INCOME'
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : item.is_checked
+                    ? 'text-neutral-400 line-through dark:text-neutral-500'
+                    : 'text-red-600 dark:text-red-400'
+              "
+            >
+              {{ type === 'INCOME' ? '+' : '−' }}{{ formatCurrency(item.value) }}
+            </p>
+          </div>
         </div>
 
-        <div class="flex shrink-0 items-center gap-2">
-          <span
-            v-if="type === 'EXPENSES' && item.expense_percentage !== undefined"
-            class="inline-flex items-center rounded-full border px-2 py-0.5 text-[0.7rem] leading-4 font-semibold"
-            :class="
-              item.is_checked
-                ? 'border-neutral-200 bg-neutral-100 text-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-500'
-                : 'border-red-200/80 bg-red-50 text-red-600 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-300'
-            "
-          >
-            {{ formatPercentage(item.expense_percentage) }}
-          </span>
-          <p
-            class="money m-0 text-base font-bold"
-            :class="
-              type === 'INCOME'
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : item.is_checked
-                  ? 'text-neutral-400 line-through dark:text-neutral-500'
-                  : 'text-red-600 dark:text-red-400'
-            "
-          >
-            {{ type === 'INCOME' ? '+' : '−' }}{{ formatCurrency(item.value) }}
-          </p>
-        </div>
-
-        <div class="flex shrink-0 items-center gap-0.5">
+        <div
+          class="flex shrink-0 items-center gap-0.5"
+          :class="mobileReorderMode ? 'max-sm:hidden' : ''"
+        >
           <Button
             text
             rounded
@@ -195,9 +226,16 @@ const emit = defineEmits<{
 }>()
 
 const localItems = ref([...props.items])
+const mobileReorderMode = ref(false)
 const draggingId = ref<string | null>(null)
 const initialOrder = ref<string[]>([])
 const dropped = ref(false)
+
+const toggleMobileReorderMode = () => {
+  if (props.reorderDisabled) return
+  mobileReorderMode.value = !mobileReorderMode.value
+  if (!mobileReorderMode.value) cancelOrFinishReorder()
+}
 
 watch(
   () => props.items,
@@ -263,8 +301,7 @@ const startMouseDrag = (itemId: string, event: DragEvent) => {
 }
 
 const startTouchDrag = (itemId: string, event: PointerEvent) => {
-  if (event.pointerType === 'mouse' || props.reorderDisabled || isInteractiveTarget(event.target))
-    return
+  if (event.pointerType === 'mouse' || props.reorderDisabled || !mobileReorderMode.value) return
   beginReorder(itemId)
   ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
 }
@@ -274,6 +311,10 @@ const isInteractiveTarget = (target: EventTarget | null) =>
 
 const continueTouchDrag = (event: PointerEvent) => {
   if (event.pointerType === 'mouse' || !draggingId.value) return
+  const scrollEdge = 72
+  if (event.clientY < scrollEdge) window.scrollBy(0, -10)
+  if (event.clientY > window.innerHeight - scrollEdge) window.scrollBy(0, 10)
+
   const target = document
     .elementFromPoint(event.clientX, event.clientY)
     ?.closest<HTMLElement>('[data-budget-item-id]')
@@ -310,9 +351,9 @@ const moveWithKeyboard = (itemId: string, offset: -1 | 1) => {
 .expense-checkbox {
   --expense-checkbox-color: light-dark(var(--p-red-500), var(--p-red-400));
   --expense-checkbox-hover-color: light-dark(var(--p-red-600), var(--p-red-300));
-  --p-checkbox-width: 1.5rem;
-  --p-checkbox-height: 1.5rem;
-  --p-checkbox-icon-size: 0.875rem;
+  --p-checkbox-width: 1.25rem;
+  --p-checkbox-height: 1.25rem;
+  --p-checkbox-icon-size: 0.75rem;
   --p-checkbox-border-radius: 9999px;
   --p-checkbox-checked-background: var(--expense-checkbox-color);
   --p-checkbox-checked-border-color: var(--expense-checkbox-color);
@@ -320,6 +361,14 @@ const moveWithKeyboard = (itemId: string, offset: -1 | 1) => {
   --p-checkbox-checked-hover-background: var(--expense-checkbox-hover-color);
   --p-checkbox-checked-hover-border-color: var(--expense-checkbox-hover-color);
   --p-checkbox-focus-ring-color: color-mix(in srgb, var(--expense-checkbox-color), transparent 75%);
+}
+
+@media (min-width: 640px) {
+  .expense-checkbox {
+    --p-checkbox-width: 1.5rem;
+    --p-checkbox-height: 1.5rem;
+    --p-checkbox-icon-size: 0.875rem;
+  }
 }
 
 .reorder-progress {
