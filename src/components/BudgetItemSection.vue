@@ -59,13 +59,7 @@
       Drag items to arrange
     </div>
 
-    <div
-      v-if="localItems.length"
-      class="relative divide-y divide-neutral-200 dark:divide-neutral-700/80"
-      :aria-busy="reordering"
-      @dragover.prevent
-      @drop.prevent="finishReorder"
-    >
+    <div v-if="localItems.length" class="relative flex flex-col" :aria-busy="reordering">
       <div
         v-if="reordering"
         class="absolute inset-x-0 top-0 z-20 h-0.5 overflow-hidden bg-neutral-200/70 dark:bg-neutral-700/70"
@@ -79,28 +73,31 @@
       </div>
 
       <article
-        v-for="item in localItems"
+        v-for="item in renderedItems"
         :key="item.id"
         :data-budget-item-id="item.id"
-        :draggable="!reorderDisabled"
+        :draggable="false"
+        :style="{ order: itemOrder.get(item.id) }"
         tabindex="0"
         :aria-label="`Reorder ${item.description}. Use drag and drop or the arrow keys.`"
         :aria-busy="checkingItemId === item.id"
-        class="group relative flex cursor-grab items-center gap-2 px-5 py-4 transition-[background-color,opacity,transform] before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-r-full before:opacity-0 before:transition-opacity hover:bg-neutral-100 hover:before:opacity-100 focus:bg-neutral-100 focus:outline-none focus:before:opacity-100 active:cursor-grabbing sm:gap-3 sm:px-6 sm:touch-auto dark:hover:bg-neutral-800/90 dark:focus:bg-neutral-800/90"
+        class="group relative flex touch-pan-y items-center gap-2 px-5 py-4 transition-[background-color,opacity,transform] before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-r-full before:opacity-0 before:transition-opacity hover:bg-neutral-100 hover:before:opacity-100 focus:bg-neutral-100 focus:outline-none focus:before:opacity-100 sm:cursor-grab sm:gap-3 sm:px-6 sm:active:cursor-grabbing dark:hover:bg-neutral-800/90 dark:focus:bg-neutral-800/90"
         :class="[
+          itemOrder.get(item.id) !== localItems.length - 1
+            ? 'border-b border-neutral-200 dark:border-neutral-700/80'
+            : '',
           type === 'INCOME' ? 'before:bg-emerald-500' : 'before:bg-red-500',
           type === 'EXPENSES' && item.is_checked ? 'bg-neutral-50/80 dark:bg-neutral-900/30' : '',
           draggingId === item.id ? 'z-10 opacity-55' : '',
           reordering ? 'pointer-events-none opacity-70' : '',
-          mobileReorderMode ? 'touch-none bg-neutral-50/70 dark:bg-neutral-800/30' : 'touch-pan-y',
+          mobileReorderMode ? 'bg-neutral-50/70 dark:bg-neutral-800/30' : '',
         ]"
-        @dragstart="startMouseDrag(item.id, $event)"
-        @dragenter.prevent="moveDraggedItem(item.id)"
-        @dragend="cancelOrFinishReorder"
-        @pointerdown="startTouchDrag(item.id, $event)"
-        @pointermove="continueTouchDrag($event)"
-        @pointerup="finishTouchDrag($event)"
-        @pointercancel="cancelTouchDrag($event)"
+        @dragstart.prevent
+        @pointerdown="startMouseDrag(item.id, $event)"
+        @pointermove="continuePointerDrag"
+        @pointerup="finishPointerDrag"
+        @pointercancel="cancelPointerDrag"
+        @lostpointercapture="cancelPointerDrag"
         @keydown.up.prevent.self="moveWithKeyboard(item.id, -1)"
         @keydown.down.prevent.self="moveWithKeyboard(item.id, 1)"
       >
@@ -164,6 +161,18 @@
           </div>
         </div>
 
+        <button
+          v-if="mobileReorderMode"
+          data-touch-reorder-handle
+          type="button"
+          class="grid size-10 shrink-0 touch-none cursor-grab place-items-center rounded-lg border-0 bg-transparent p-0 text-neutral-400 transition-colors active:cursor-grabbing active:bg-neutral-200 active:text-neutral-700 sm:hidden dark:text-neutral-500 dark:active:bg-neutral-700 dark:active:text-neutral-200"
+          :aria-label="`Drag ${item.description} to reorder`"
+          :disabled="reorderDisabled"
+          @pointerdown.stop="startTouchDrag(item.id, $event)"
+        >
+          <GripVertical class="size-4" aria-hidden="true" />
+        </button>
+
         <div
           class="flex shrink-0 items-center gap-0.5"
           :class="mobileReorderMode ? 'max-sm:hidden' : ''"
@@ -202,9 +211,9 @@
 </template>
 
 <script setup lang="ts">
-import { MoneyBill, Pencil, Plus, Receipt, Trash } from '@primeicons/vue'
+import { GripVertical, MoneyBill, Pencil, Plus, Receipt, Trash } from '@primeicons/vue'
 import Checkbox from 'primevue/checkbox'
-import { ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { BudgetItem, BudgetItemType } from '@/types'
 import { formatCurrency, formatPercentage } from '@/utils/format'
 
@@ -229,17 +238,29 @@ const localItems = ref([...props.items])
 const mobileReorderMode = ref(false)
 const draggingId = ref<string | null>(null)
 const initialOrder = ref<string[]>([])
-const dropped = ref(false)
+const activePointerId = ref<number | null>(null)
+const activePointerTarget = ref<HTMLElement | null>(null)
+// Keep the captured element in place in the DOM until drop. Moving it can release
+// pointer capture; flex order provides the live preview.
+const renderedItems = computed(() =>
+  draggingId.value
+    ? [...localItems.value].sort(
+        (a, b) => initialOrder.value.indexOf(a.id) - initialOrder.value.indexOf(b.id),
+      )
+    : localItems.value,
+)
+const itemOrder = computed(() => new Map(localItems.value.map((item, index) => [item.id, index])))
 
 const toggleMobileReorderMode = () => {
   if (props.reorderDisabled) return
   mobileReorderMode.value = !mobileReorderMode.value
-  if (!mobileReorderMode.value) cancelOrFinishReorder()
+  if (!mobileReorderMode.value) clearPointerDrag(false)
 }
 
 watch(
   () => props.items,
   (items) => {
+    clearPointerDrag(false)
     localItems.value = [...items]
   },
   { deep: true },
@@ -248,7 +269,6 @@ watch(
 const beginReorder = (itemId: string) => {
   draggingId.value = itemId
   initialOrder.value = localItems.value.map((item) => item.id)
-  dropped.value = false
 }
 
 const moveDraggedItem = (targetId: string) => {
@@ -269,7 +289,6 @@ const hasOrderChanged = () =>
 
 const finishReorder = () => {
   if (!draggingId.value) return
-  dropped.value = true
   if (hasOrderChanged()) {
     emit(
       'reorder',
@@ -280,37 +299,60 @@ const finishReorder = () => {
   draggingId.value = null
 }
 
-const cancelOrFinishReorder = () => {
+const cancelReorder = () => {
   if (!draggingId.value) return
-  if (dropped.value) {
-    draggingId.value = null
-    return
-  }
   localItems.value = [...props.items]
   draggingId.value = null
 }
 
-const startMouseDrag = (itemId: string, event: DragEvent) => {
-  if (props.reorderDisabled || isInteractiveTarget(event.target)) {
-    event.preventDefault()
-    return
-  }
-  beginReorder(itemId)
-  event.dataTransfer?.setData('text/plain', itemId)
-  if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move'
+const startMouseDrag = (itemId: string, event: PointerEvent) => {
+  if (event.pointerType !== 'mouse' || isInteractiveTarget(event.target)) return
+  startPointerDrag(itemId, event)
+}
+
+const moveOverRow = (itemId: string, row: HTMLElement, clientY: number) => {
+  if (!draggingId.value || draggingId.value === itemId) return
+  const fromIndex = itemOrder.value.get(draggingId.value)
+  const toIndex = itemOrder.value.get(itemId)
+  if (fromIndex === undefined || toIndex === undefined) return
+  const bounds = row.getBoundingClientRect()
+  const midpoint = bounds.top + bounds.height / 2
+  if (fromIndex < toIndex ? clientY < midpoint : clientY > midpoint) return
+  moveDraggedItem(itemId)
 }
 
 const startTouchDrag = (itemId: string, event: PointerEvent) => {
-  if (event.pointerType === 'mouse' || props.reorderDisabled || !mobileReorderMode.value) return
+  if (!mobileReorderMode.value) return
+  startPointerDrag(itemId, event)
+}
+
+const startPointerDrag = (itemId: string, event: PointerEvent) => {
+  if (
+    props.reorderDisabled ||
+    props.reordering ||
+    event.button !== 0 ||
+    event.isPrimary === false ||
+    activePointerId.value !== null
+  )
+    return
+  event.preventDefault()
   beginReorder(itemId)
-  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+  const target = event.currentTarget as HTMLElement
+  if (event.pointerType === 'mouse') target.focus({ preventScroll: true })
+  activePointerId.value = event.pointerId
+  activePointerTarget.value = target
+  try {
+    target.setPointerCapture(event.pointerId)
+  } catch {
+    clearPointerDrag(false)
+  }
 }
 
 const isInteractiveTarget = (target: EventTarget | null) =>
-  target instanceof HTMLElement && Boolean(target.closest('button, input, label, [data-no-drag]'))
+  target instanceof Element && Boolean(target.closest('button, input, label, [data-no-drag]'))
 
-const continueTouchDrag = (event: PointerEvent) => {
-  if (event.pointerType === 'mouse' || !draggingId.value) return
+const continuePointerDrag = (event: PointerEvent) => {
+  if (!draggingId.value || activePointerId.value !== event.pointerId) return
   const scrollEdge = 72
   if (event.clientY < scrollEdge) window.scrollBy(0, -10)
   if (event.clientY > window.innerHeight - scrollEdge) window.scrollBy(0, 10)
@@ -319,22 +361,69 @@ const continueTouchDrag = (event: PointerEvent) => {
     .elementFromPoint(event.clientX, event.clientY)
     ?.closest<HTMLElement>('[data-budget-item-id]')
   const targetId = target?.dataset.budgetItemId
-  if (targetId) moveDraggedItem(targetId)
+  if (targetId && target) moveOverRow(targetId, target, event.clientY)
 }
 
-const finishTouchDrag = (event: PointerEvent) => {
-  if (event.pointerType === 'mouse' || !draggingId.value) return
-  ;(event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId)
-  finishReorder()
+const finishPointerDrag = (event: PointerEvent) => {
+  if (activePointerId.value !== event.pointerId) return
+  clearPointerDrag(true)
 }
 
-const cancelTouchDrag = (event: PointerEvent) => {
-  if (event.pointerType === 'mouse') return
-  cancelOrFinishReorder()
+const cancelPointerDrag = (event: PointerEvent) => {
+  if (activePointerId.value !== event.pointerId) return
+  clearPointerDrag(false)
 }
+
+const clearPointerState = () => {
+  activePointerId.value = null
+  activePointerTarget.value = null
+}
+
+const releasePointerCapture = () => {
+  const target = activePointerTarget.value
+  const pointerId = activePointerId.value
+  clearPointerState()
+  if (!target || pointerId === null) return
+  try {
+    if (target.hasPointerCapture(pointerId)) target.releasePointerCapture(pointerId)
+  } catch {
+    // The browser may already have released capture after pointer-up.
+  }
+}
+
+const clearPointerDrag = (save: boolean) => {
+  releasePointerCapture()
+  if (save) finishReorder()
+  else cancelReorder()
+}
+
+const handleInteractionInterrupted = () => clearPointerDrag(false)
+const handleEscape = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') handleInteractionInterrupted()
+}
+const handleVisibilityChange = () => {
+  if (document.hidden) handleInteractionInterrupted()
+}
+
+onMounted(() => {
+  window.addEventListener('pointerup', finishPointerDrag)
+  window.addEventListener('pointercancel', cancelPointerDrag)
+  window.addEventListener('keydown', handleEscape)
+  window.addEventListener('blur', handleInteractionInterrupted)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('pointerup', finishPointerDrag)
+  window.removeEventListener('pointercancel', cancelPointerDrag)
+  window.removeEventListener('keydown', handleEscape)
+  window.removeEventListener('blur', handleInteractionInterrupted)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  clearPointerDrag(false)
+})
 
 const moveWithKeyboard = (itemId: string, offset: -1 | 1) => {
-  if (props.reorderDisabled) return
+  if (props.reorderDisabled || props.reordering || activePointerId.value !== null) return
   const fromIndex = localItems.value.findIndex((item) => item.id === itemId)
   const toIndex = fromIndex + offset
   if (fromIndex < 0 || toIndex < 0 || toIndex >= localItems.value.length) return
