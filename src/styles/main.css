@@ -50,6 +50,12 @@ button,
   font-weight: 500;
 }
 
+/* Only suppress the returned trigger's ring until keyboard use or blur. */
+.p-button.dialog-pointer-return:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 .p-inputtext.p-invalid:enabled:focus {
   border-color: var(--p-inputtext-invalid-border-color);
   outline-color: var(--p-inputtext-invalid-border-color);

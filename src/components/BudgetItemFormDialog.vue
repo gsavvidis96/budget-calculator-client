@@ -6,6 +6,8 @@
     :style="{ width: '30rem' }"
     :breakpoints="{ '640px': 'calc(100vw - 2.5rem)' }"
     :draggable="false"
+    @show="dialogFocus.onShow"
+    @hide="dialogFocus.onHide"
   >
     <p class="mt-0 mb-6 text-base leading-7 text-neutral-500 dark:text-neutral-400">
       {{
@@ -53,21 +55,17 @@
         <label
           for="item-value"
           class="text-base font-semibold text-neutral-700 dark:text-neutral-200"
-          >Amount</label
+          >Amount (EUR)</label
         >
-        <InputNumber
-          input-id="item-value"
-          name="value"
-          fluid
-          mode="currency"
-          currency="EUR"
-          locale="en-US"
-          :min="0"
-          :max="99999999.99"
-          :min-fraction-digits="2"
-          :max-fraction-digits="2"
-          :invalid="Boolean($form.value?.invalid)"
-        />
+        <FormField v-slot="$field" name="value">
+          <AmountInput
+            input-id="item-value"
+            :model-value="$field.value"
+            :invalid="$field.invalid"
+            @update:model-value="$field.props.onChange({ value: $event })"
+            @blur="$field.props.onBlur"
+          />
+        </FormField>
         <Message v-if="$form.value?.invalid" severity="error" size="small" variant="simple">{{
           $form.value.error?.message
         }}</Message>
@@ -103,10 +101,12 @@
 
 <script setup lang="ts">
 import { Spinner } from '@primeicons/vue'
-import { Form, type FormSubmitEvent } from '@primevue/forms'
+import { Form, FormField, type FormSubmitEvent } from '@primevue/forms'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { computed, ref } from 'vue'
+import AmountInput from '@/components/AmountInput.vue'
+import { useDialogFocusReturn } from '@/composables/useDialogFocusReturn'
 import { createBudgetItem, updateBudgetItem } from '@/api/budgets'
 import { budgetKeys } from '@/queries/budgets'
 import { budgetItemSchema, type BudgetItemFormValues } from '@/schemas/budgets'
@@ -121,16 +121,19 @@ const props = defineProps<{
 }>()
 
 const visible = defineModel<boolean>({ required: true })
+const dialogFocus = useDialogFocusReturn()
 const toast = useToast()
 const queryClient = useQueryClient()
 const serverError = ref('')
 
 const resolver = zodResolver(budgetItemSchema)
 
-const initialValues = computed<BudgetItemFormValues>(() => ({
-  description: props.item?.description ?? '',
-  value: props.item?.value ?? 0,
-}))
+const initialValues = computed<Omit<BudgetItemFormValues, 'value'> & { value: number | null }>(
+  () => ({
+    description: props.item?.description ?? '',
+    value: props.item?.value ?? null,
+  }),
+)
 const formKey = computed(() => `${props.item?.id ?? 'new'}-${props.type}-${visible.value}`)
 
 const mutation = useMutation({
